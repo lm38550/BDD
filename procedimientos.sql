@@ -53,6 +53,7 @@ BEGIN
     BEGIN
         EXECUTE IMMEDIATE 'UPDATE Sucursales SET Director = '''' WHERE Director = :1' USING p_codigo;
     END;
+    COMMIT;
 END bajaEmpleado;
 
 
@@ -71,6 +72,7 @@ BEGIN
     ELSE
         EXECUTE IMMEDIATE 'UPDATE Empleados SET salario = ' || p_salario || ' WHERE codigo = ' || p_codigo;
     END IF;
+    COMMIT;
 END modificarSalario;
 
 CREATE OR REPLACE PROCEDURE transladarEmpleado(
@@ -91,6 +93,7 @@ BEGIN
         WHEN OTHERS THEN
             RAISE_APPLICATION_ERROR(-20001, 'Error updating employee record');
     END;
+    COMMIT;
 END transladarEmpleado;
 
 CREATE OR REPLACE PROCEDURE nuevaSucursal(
