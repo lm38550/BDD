@@ -86,3 +86,5 @@ CREATE TABLE Suministro( CMD
    FOREIGN KEY(codigo) REFERENCES Vino(codigo),
    FOREIGN KEY(DNI) REFERENCES Cliente(DNI)
 );
+
+--comment
