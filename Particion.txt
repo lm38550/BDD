@@ -1,0 +1,15 @@
+L1 Madrid
+L2 Barcelona
+L3 La Coruña
+L4 Granada
+
+Sucursal1 = SL(comunidadAutonoma = "Castilla-Léon" \/ comunidadAutonoma = "Castilla-La Mancha" \/ comunidadAutonoma = "Aragon" \/ comunidadAutonoma = "Madrid" \/ comunidadAutonoma = "La Rioja")
+Sucursal2 = SL(comunidadAutonoma = "Cataluña" \/ comunidadAutonoma = "Baleares" \/ comunidadAutonoma = "Pais Valenciano" \/ comunidadAutonoma = "Murcia")
+Sucursal3 = SL(comunidadAutonoma = "Galicia" \/ comunidadAutonoma = "Asturias" \/ comunidadAutonoma = "Cantabria" \/ comunidadAutonoma = "Pais Vasco" \/ comunidadAutonoma = "Navarra")
+Sucursal4 = SL(comunidadAutonoma = "Andalucia" \/ comunidadAutonoma = "Extremadura" \/ comunidadAutonoma = "Canarias" \/ comunidadAutonoma = "Ceuta" \/ comunidadAutonoma = "Melilla")
+
+Cliente1 = SL(comunidadAutonoma = "Castilla-Léon" \/ comunidadAutonoma = "Castilla-La Mancha" \/ comunidadAutonoma = "Aragon" \/ comunidadAutonoma = "Madrid" \/ comunidadAutonoma = "La Rioja")
+Cliente2 = SL(comunidadAutonoma = "Cataluña" \/ comunidadAutonoma = "Baleares" \/ comunidadAutonoma = "Pais Valenciano" \/ comunidadAutonoma = "Murcia")
+Cliente3 = SL(comunidadAutonoma = "Galicia" \/ comunidadAutonoma = "Asturias" \/ comunidadAutonoma = "Cantabria" \/ comunidadAutonoma = "Pais Vasco" \/ comunidadAutonoma = "Navarra")
+Cliente4 = SL(comunidadAutonoma = "Andalucia" \/ comunidadAutonoma = "Extremadura" \/ comunidadAutonoma = "Canarias" \/ comunidadAutonoma = "Ceuta" \/ comunidadAutonoma = "Melilla")
+
