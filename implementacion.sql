@@ -6,14 +6,15 @@ DROP TABLE Cliente;
 DROP TABLE Sucursal;
 DROP TABLE Productor;
 
-CREATE TABLE Productor( CD
-   DNI VARCHAR2(50),
+CREATE TABLE Productor( --CD
+   codigo NUMBER(10),
+   DNI VARCHAR2(50) NOT NULL,
    nombre VARCHAR2(50)  NOT NULL,
    direccion VARCHAR2(500) NOT NULL,
-   PRIMARY KEY(DNI)
+   PRIMARY KEY(codigo)
 );
 
-CREATE TABLE Sucursal( CM
+CREATE TABLE Sucursal( --CM
    codigo NUMBER(10),
    nombre VARCHAR2(50)  NOT NULL,
    ciudad VARCHAR2(50)  NOT NULL,
@@ -22,20 +23,19 @@ CREATE TABLE Sucursal( CM
    PRIMARY KEY(codigo)
 );
 
-CREATE TABLE Cliente( C
-   DNI VARCHAR2(50) ,
+CREATE TABLE Cliente( --CMD
+   codigo NUMBER(10),
+   DNI VARCHAR2(50) NOT NULL ,
    tipo VARCHAR2(50)  NOT NULL,
    nombre VARCHAR2(50)  NOT NULL,
    direccion VARCHAR2(500) NOT NULL,
    comunidadAutonoma VARCHAR2(50)  NOT NULL,
-   codigo NUMBER(10) NOT NULL,
-   PRIMARY KEY(DNI),
-   FOREIGN KEY(codigo) REFERENCES Sucursal(codigo)
+   PRIMARY KEY(codigo),
 );
 
-CREATE TABLE Empleado( CMD
+CREATE TABLE Empleado( --CMD
    codigo NUMBER(10),
-   DNI VARCHAR2(50),
+   DNI VARCHAR2(50)  NOT NULL,
    nombre VARCHAR2(50)  NOT NULL,
    direccion VARCHAR2(500) NOT NULL,
    fechaDeComienzo DATE NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE Empleado( CMD
    FOREIGN KEY(codigo_sucursal) REFERENCES Sucursal(codigo)
 );
 
-CREATE TABLE Vino( CMD
+CREATE TABLE Vino( --CMD
    codigo NUMBER(10),
    marca VARCHAR2(50)  NOT NULL,
    comunidadAutonoma VARCHAR2(50)  NOT NULL,
@@ -56,35 +56,31 @@ CREATE TABLE Vino( CMD
    viñedoDeProcedencia VARCHAR2(50)  NOT NULL,
    cantidadProducida NUMBER(10) NOT NULL,
    cantidadStock NUMBER(10) NOT NULL,
-   DNI VARCHAR2(50)  NOT NULL,
+   codigo_productor VARCHAR2(50)  NOT NULL,
    codigo_sucursal NUMBER(10) NOT NULL,
    PRIMARY KEY(codigo),
-   FOREIGN KEY(DNI) REFERENCES Productor(DNI),
+   FOREIGN KEY(DNI) REFERENCES Productor(codigo),
    FOREIGN KEY(codigo_sucursal) REFERENCES Sucursal(codigo)
 );
 
-CREATE TABLE Pide( CD
-   ID NUMBER(10),
+CREATE TABLE Pide( --CD
    fecha DATE NOT NULL,
    cantidad NUMBER(10) NOT NULL,
    codigo_vino NUMBER(10) NOT NULL,
    codigo_pedidor NUMBER(10) NOT NULL,
    codigo_entregador NUMBER(10) NOT NULL,
-   PRIMARY KEY(ID),
    FOREIGN KEY(codigo_vino) REFERENCES Vino(codigo),
    FOREIGN KEY(codigo_pedidor) REFERENCES Sucursal(codigo),
    FOREIGN KEY(codigo_entregador) REFERENCES Sucursal(codigo)
 );
 
-CREATE TABLE Suministro( CMD
-   ID NUMBER(10),
+CREATE TABLE Suministro( --CMD
    cantidad NUMBER(10) NOT NULL,
    fecha DATE NOT NULL,
-   codigo NUMBER(10) NOT NULL,
-   DNI VARCHAR2(50)  NOT NULL,
-   PRIMARY KEY(ID),
-   FOREIGN KEY(codigo) REFERENCES Vino(codigo),
-   FOREIGN KEY(DNI) REFERENCES Cliente(DNI)
+   codigo_vino NUMBER(10) NOT NULL,
+   codigo_cliente VARCHAR2(50)  NOT NULL,
+   codigo_sucursal NUMBER(10) NOT NULL,
+   FOREIGN KEY(codigo_vino) REFERENCES Vino(codigo),
+   FOREIGN KEY(codigo_cliente) REFERENCES Cliente(codigo)
+   FOREIGN KEY(codigo_sucursal) REFERENCES Sucursal(codigo)
 );
-
---comment
