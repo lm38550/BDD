@@ -411,7 +411,6 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
     END;
 END;
-/
 
 CREATE OR REPLACE TRIGGER modificarVinoLocalidad
 INSTEAD OF UPDATE ON Vinos
@@ -461,7 +460,6 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
     END;
 END;
-/
 
 CREATE OR REPLACE TRIGGER modificarSuministroLocalidad
 INSTEAD OF UPDATE ON Suministros
