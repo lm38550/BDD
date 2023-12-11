@@ -1,37 +1,81 @@
 ------------------------------------CREATE----------------------------------------
 
-CREATE OR REPLACE TRIGGER nuevoProductorLocalidad
-INSTEAD OF INSERT ON Productores
+CREATE OR REPLACE TRIGGER nuevoProductorLocalidad ----------------ERASMUS1-------------
+AFTER INSERT ON Productor
 FOR EACH ROW
-DECLARE
-    v_comunidadAutonoma VARCHAR2(50);
-    v_localidad VARCHAR2(50);
 BEGIN
-    -- Extract the comunidadAutonoma value from the :NEW column
-    SELECT comunidadAutonoma INTO v_comunidadAutonoma
-    FROM Vinos
-    WHERE codigo_productor = :NEW.codigo;
-
-    CASE
-        WHEN v_comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
-        WHEN v_comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
-        WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
-        WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
-        ELSE
-            -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
-    END CASE;
-
-    BEGIN
-        -- Use a nested block for exception handling
-        EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad || '.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
-        USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
-    EXCEPTION
-        WHEN OTHERS THEN
-            -- Log the error or handle it appropriately
-            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-    END;
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus2.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus3.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus4.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END;
+
+CREATE OR REPLACE TRIGGER nuevoProductorLocalidad ----------------ERASMUS2-------------
+AFTER INSERT ON Productor
+FOR EACH ROW
+BEGIN
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus1.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus3.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus4.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+
+CREATE OR REPLACE TRIGGER nuevoProductorLocalidad ----------------ERASMUS3-------------
+AFTER INSERT ON Productor
+FOR EACH ROW
+BEGIN
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus1.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus2.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus4.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+
+CREATE OR REPLACE TRIGGER nuevoProductorLocalidad ----------------ERASMUS4-------------
+AFTER INSERT ON Productor
+FOR EACH ROW
+BEGIN
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus1.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus2.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+    
+    EXECUTE IMMEDIATE 'INSERT INTO erasmus3.Productor(codigo, DNI, nombre, direccion) VALUES (:1, :2, :3, :4)'
+    USING :NEW.codigo, :NEW.dni, :NEW.nombre, :NEW.direccion;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+
 
 CREATE OR REPLACE TRIGGER nuevaSucursalLocalidad
 INSTEAD OF INSERT ON Sucursales

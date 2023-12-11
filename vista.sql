@@ -33,15 +33,6 @@ SELECT * FROM erasmus3.Pide
 UNION
 SELECT * FROM erasmus4.Pide;
 
-CREATE VIEW Productores AS
-SELECT * FROM erasmus1.Productor
-UNION
-SELECT * FROM erasmus2.Productor
-UNION
-SELECT * FROM erasmus3.Productor
-UNION
-SELECT * FROM erasmus4.Productor;
-
 CREATE VIEW Sucursales AS
 SELECT * FROM erasmus1.Sucursal
 UNION
