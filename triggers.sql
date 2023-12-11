@@ -239,38 +239,86 @@ END;
 
 ----------------------------------------DELETE------------------------------------------------
 
-CREATE OR REPLACE TRIGGER borrarProductorLocalidad
-INSTEAD OF DELETE ON Productores
+CREATE OR REPLACE TRIGGER borrarProductorLocalidad ----------------ERASMUS1-------------
+AFTER DELETE ON Productor
 FOR EACH ROW
-DECLARE
-    v_comunidadAutonoma VARCHAR2(50);
-    v_localidad VARCHAR2(50);
 BEGIN
-    -- Extract the comunidadAutonoma value from the :OLD column
-    SELECT comunidadAutonoma INTO v_comunidadAutonoma
-    FROM Vinos
-    WHERE codigo_productor = :OLD.codigo;
-
-    CASE
-        WHEN v_comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
-        WHEN v_comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
-        WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
-        WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
-        ELSE
-            -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
-    END CASE;
-
-    BEGIN
-        -- Use a nested block for exception handling
-        EXECUTE IMMEDIATE 'DELETE FROM ' || v_localidad || '.Productor WHERE codigo = :1'
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus2.Productor WHERE codigo = :1'
         USING :OLD.codigo;
-    EXCEPTION
-        WHEN OTHERS THEN
-            -- Log the error or handle it appropriately
-            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-    END;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus3.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus4.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END;
+
+CREATE OR REPLACE TRIGGER borrarProductorLocalidad ----------------ERASMUS2-------------
+AFTER DELETE ON Productor
+FOR EACH ROW
+BEGIN
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus1.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus3.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus4.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+
+CREATE OR REPLACE TRIGGER borrarProductorLocalidad ----------------ERASMUS3-------------
+AFTER DELETE ON Productor
+FOR EACH ROW
+BEGIN
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus1.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus2.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus4.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+
+CREATE OR REPLACE TRIGGER borrarProductorLocalidad ----------------ERASMUS4-------------
+AFTER DELETE ON Productor
+FOR EACH ROW
+BEGIN
+    -- Use a nested block for exception handling    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus1.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus2.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+    EXECUTE IMMEDIATE 'DELETE FROM erasmus3.Productor WHERE codigo = :1'
+        USING :OLD.codigo;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log the error or handle it appropriately
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END;
+
 
 CREATE OR REPLACE TRIGGER borrarEmpleadoLocalidad
 INSTEAD OF DELETE ON Empleados
