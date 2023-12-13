@@ -30,7 +30,7 @@ CREATE TABLE Cliente( --CMD
    nombre VARCHAR2(50)  NOT NULL,
    direccion VARCHAR2(500) NOT NULL,
    comunidadAutonoma VARCHAR2(50)  NOT NULL,
-   PRIMARY KEY(codigo),
+   PRIMARY KEY(codigo)
 );
 
 CREATE TABLE Empleado( --CMD
@@ -56,10 +56,10 @@ CREATE TABLE Vino( --CMD
    viñedoDeProcedencia VARCHAR2(50)  NOT NULL,
    cantidadProducida NUMBER(10) NOT NULL,
    cantidadStock NUMBER(10) NOT NULL,
-   codigo_productor VARCHAR2(50)  NOT NULL,
+   codigo_productor NUMBER(10)  NOT NULL,
    codigo_sucursal NUMBER(10) NOT NULL,
    PRIMARY KEY(codigo),
-   FOREIGN KEY(DNI) REFERENCES Productor(codigo),
+   FOREIGN KEY(codigo_productor) REFERENCES Productor(codigo),
    FOREIGN KEY(codigo_sucursal) REFERENCES Sucursal(codigo)
 );
 
@@ -78,9 +78,9 @@ CREATE TABLE Suministro( --CMD
    cantidad NUMBER(10) NOT NULL,
    fecha DATE NOT NULL,
    codigo_vino NUMBER(10) NOT NULL,
-   codigo_cliente VARCHAR2(50)  NOT NULL,
+   codigo_cliente NUMBER(10)  NOT NULL,
    codigo_sucursal NUMBER(10) NOT NULL,
    FOREIGN KEY(codigo_vino) REFERENCES Vino(codigo),
-   FOREIGN KEY(codigo_cliente) REFERENCES Cliente(codigo)
+   FOREIGN KEY(codigo_cliente) REFERENCES Cliente(codigo),
    FOREIGN KEY(codigo_sucursal) REFERENCES Sucursal(codigo)
 );

@@ -33,15 +33,6 @@ SELECT * FROM erasmus3.Pide
 UNION
 SELECT * FROM erasmus4.Pide;
 
-CREATE VIEW Productores AS
-SELECT * FROM erasmus1.Productor
-UNION
-SELECT * FROM erasmus2.Productor
-UNION
-SELECT * FROM erasmus3.Productor
-UNION
-SELECT * FROM erasmus4.Productor;
-
 CREATE VIEW Sucursales AS
 SELECT * FROM erasmus1.Sucursal
 UNION
@@ -68,22 +59,3 @@ UNION
 SELECT * FROM erasmus3.Vino
 UNION
 SELECT * FROM erasmus4.Vino;
-
--- CREATE VIEW Empleados_Sucursales AS
--- SELECT
---     e.codigo as codE,
---     e.dni,
---     e.nombre as nombreE,
---     e.direccion,
---     e.fechadecomienzo,
---     e.salario,
---     e.trabajaporlasucursal,
---     s.codigo as codS,
---     s.nombre as nombreS,
---     s.ciudad,
---     s.director,
---     s.comunidadautonoma
--- FROM Empleados E
--- JOIN Sucursales S ON E.codigo_sucursal = S.codigo
-
--- comment
