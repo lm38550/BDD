@@ -57,10 +57,8 @@ CREATE TABLE Vino( --CMD
    cantidadProducida NUMBER(10) NOT NULL,
    cantidadStock NUMBER(10) NOT NULL,
    codigo_productor NUMBER(10)  NOT NULL,
-   codigo_sucursal NUMBER(10) NOT NULL,
    PRIMARY KEY(codigo),
-   FOREIGN KEY(codigo_productor) REFERENCES Productor(codigo),
-   FOREIGN KEY(codigo_sucursal) REFERENCES Sucursal(codigo)
+   FOREIGN KEY(codigo_productor) REFERENCES Productor(codigo)
 );
 
 CREATE TABLE Pide( --CD
