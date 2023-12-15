@@ -237,7 +237,7 @@ BEGIN
     END;
 END;
 
-----------------------------------------DELETE------------------------------------------------
+----------------------------------------DELETE-------------s-----------------------------------
 
 CREATE OR REPLACE TRIGGER borrarProductorLocalidad ----------------ERASMUS1-------------
 AFTER DELETE ON Productor
@@ -520,8 +520,8 @@ BEGIN
             RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
     END CASE;
 
-    EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Vino SET codigo = :1, marca = :2, comunidadAutonoma = :3, año = :4, denominacionDeOrigen = :5, graduacion = :6, viñedoDeProcedencia = :7, cantidadProducida = :8, cantidadStock = :9, codigo_productor = :10, codigo_sucursal = :11 WHERE codigo = :1'
-    USING :NEW.codigo, :NEW.marca, :NEW.comunidadAutonoma, :NEW.año, :NEW.denominacionDeOrigen, :NEW.graduacion, :NEW.viñedoDeProcedencia, :NEW.cantidadProducida, :NEW.cantidadStock, :NEW.codigo_productor, :NEW.codigo_sucursal;
+    EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Vino SET codigo = :1, marca = :2, comunidadAutonoma = :3, año = :4, denominacionDeOrigen = :5, graduacion = :6, viñedoDeProcedencia = :7, cantidadProducida = :8, cantidadStock = :9, codigo_productor = :10 WHERE codigo = :1'
+    USING :NEW.codigo, :NEW.marca, :NEW.comunidadAutonoma, :NEW.año, :NEW.denominacionDeOrigen, :NEW.graduacion, :NEW.viñedoDeProcedencia, :NEW.cantidadProducida, :NEW.cantidadStock, :NEW.codigo_productor;
 END;
 
 CREATE OR REPLACE TRIGGER modificarPideLocalidad
