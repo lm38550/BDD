@@ -504,24 +504,24 @@ BEGIN
     END;
 END;
 
-CREATE OR REPLACE TRIGGER modificarVinoLocalidad
+create or replace TRIGGER modificarVinoLocalidad
 INSTEAD OF UPDATE ON Vinos
 FOR EACH ROW
 DECLARE
     v_localidad VARCHAR2(50);
 BEGIN
     CASE
-        WHEN :NEW.comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
-        WHEN :NEW.comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
-        WHEN :NEW.comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
-        WHEN :NEW.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
+        WHEN :OLD.comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
+        WHEN :OLD.comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
+        WHEN :OLD.comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
+        WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
-    END CASE;
+            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :OLD.comunidadAutonoma);
+    END CASE;    
 
-    EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Vino SET codigo = :1, marca = :2, comunidadAutonoma = :3, año = :4, denominacionDeOrigen = :5, graduacion = :6, viñedoDeProcedencia = :7, cantidadProducida = :8, cantidadStock = :9, codigo_productor = :10 WHERE codigo = :1'
-    USING :NEW.codigo, :NEW.marca, :NEW.comunidadAutonoma, :NEW.año, :NEW.denominacionDeOrigen, :NEW.graduacion, :NEW.viñedoDeProcedencia, :NEW.cantidadProducida, :NEW.cantidadStock, :NEW.codigo_productor;
+    EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Vino SET cantidadProducida = :1, cantidadStock = :2 WHERE codigo = :3'
+    USING :NEW.cantidadProducida, :NEW.cantidadStock, :OLD.codigo;
 END;
 
 CREATE OR REPLACE TRIGGER modificarPideLocalidad

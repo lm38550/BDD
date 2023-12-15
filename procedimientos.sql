@@ -156,20 +156,20 @@ CREATE OR REPLACE PROCEDURE nuevoCliente(
     p_comunidadAutonoma VARCHAR2
 ) IS
 BEGIN
-    INSERT INTO Clientes
+    INSERT INTO Clientes(
         codigo,
         DNI,
         tipo,
         nombre,
         direccion,
-        comunidadAutonoma
-    VALUES
-        p_codigo_director,
+        comunidadAutonoma)
+    VALUES(
+        p_codigo,
         p_DNI,
-        p.tipo,
-        p.nombre,
-        p.direccion,
-        p.comunidadAutonoma
+        p_tipo,
+        p_nombre,
+        p_direccion,
+        p_comunidadAutonoma);
     
     DBMS_OUTPUT.PUT_LINE('Cliente creada');
     
@@ -284,32 +284,46 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END bajaSuministro;
 
-
-
-CREATE OR REPLACE PROCEDURE nuevaPedida(
+create or replace PROCEDURE nuevaPedida(
     p_codigo_pedidor NUMBER,
     p_codigo_entregador NUMBER,
     p_codigo_vino NUMBER,
     p_fecha DATE,
     p_cantidad NUMBER
 ) IS
-    v_communidadAutonomaEntregador VARCHAR2,
-    v_communidadAutonomaVino VARCHAR2,
-    v_cantidad_disponible NUMBER;
+    v_localidadEntregador VARCHAR2(50);
+    v_localidadVino VARCHAR2(50);
+    v_cantidad_disponible NUMBER(10);
+    v_cantidad_producida NUMBER;
 BEGIN
-    SELECT cantidadStock INTO v_cantidad_disponible
+
+SELECT localidad INTO v_localidadVino
+FROM (
+    SELECT 'erasmus1' AS localidad FROM erasmus1.vino WHERE codigo = p_codigo_vino
+    UNION ALL
+    SELECT 'erasmus2' AS localidad FROM erasmus2.vino WHERE codigo = p_codigo_vino
+    UNION ALL
+    SELECT 'erasmus3' AS localidad FROM erasmus3.vino WHERE codigo = p_codigo_vino
+    UNION ALL
+    SELECT 'erasmus4' AS localidad FROM erasmus4.vino WHERE codigo = p_codigo_vino
+);
+
+SELECT localidad INTO v_localidadEntregador
+FROM (
+    SELECT 'erasmus1' AS localidad FROM erasmus1.sucursal WHERE codigo = p_codigo_entregador
+    UNION ALL
+    SELECT 'erasmus2' AS localidad FROM erasmus2.sucursal WHERE codigo = p_codigo_entregador
+    UNION ALL
+    SELECT 'erasmus3' AS localidad FROM erasmus3.sucursal WHERE codigo = p_codigo_entregador
+    UNION ALL
+    SELECT 'erasmus4' AS localidad FROM erasmus4.sucursal WHERE codigo = p_codigo_entregador
+);
+
+    SELECT cantidadStock, cantidadProducida INTO v_cantidad_disponible, v_cantidad_producida
     FROM Vinos
     WHERE codigo = p_codigo_vino;
-    
-    SELECT comunidadAutonoma INTO v_communidadAutonomaEntregador
-    FROM Sucursales
-    WHERE codigo = p_codigo_entregador;
 
-    SELECT comunidadAutonoma INTO v_communidadAutonomaVino
-    FROM Vinos
-    WHERE codigo = p_codigo_vino;
-
-    IF v_communidadAutonomaEntregador == v_communidadAutonomaVino THEN
+    IF v_localidadVino = v_localidadEntregador THEN
         IF v_cantidad_disponible >= p_cantidad THEN
             INSERT INTO Pides (
                 codigo_pedidor,
@@ -326,8 +340,8 @@ BEGIN
             );
             COMMIT;
 
-            UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad WHERE codigo = p_codigo_vino;
-        
+            UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad, cantidadProducida = v_cantidad_producida WHERE codigo = p_codigo_vino;
+
             DBMS_OUTPUT.PUT_LINE('Pedido creada exitosamente.');
             COMMIT;
         ELSE
@@ -347,19 +361,40 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END nuevaPedida;
 
-CREATE OR REPLACE PROCEDURE bajaPedida(
+create or replace PROCEDURE bajaPedida(
     p_codigo_pedidor NUMBER,
     p_codigo_entregador NUMBER,
     p_codigo_vino NUMBER,
     p_fecha DATE DEFAULT NULL
 ) IS
+    v_cantidad NUMBER(10);
+    v_cantidad_disponible NUMBER(10);
+    v_cantidad_producida NUMBER(10);
 BEGIN
-    IF p_fecha == NULL THEN
+    SELECT cantidadStock, cantidadProducida INTO v_cantidad_disponible, v_cantidad_producida
+    FROM Vinos
+    WHERE codigo = p_codigo_vino;
+
+    IF p_fecha IS NULL THEN
+        SELECT cantidad INTO v_cantidad
+        FROM Pides
+        WHERE codigo_pedidor = p_codigo_pedidor
+        AND codigo_entregador = p_codigo_entregador
+        AND codigo_vino = p_codigo_vino;
+
         DELETE FROM Pides WHERE
             codigo_pedidor = p_codigo_pedidor AND
             codigo_entregador = p_codigo_entregador AND
             codigo_vino = p_codigo_vino;
+        
     ELSE
+        SELECT cantidad INTO v_cantidad
+        FROM Pides
+        WHERE codigo_pedidor = p_codigo_pedidor
+        AND codigo_entregador = p_codigo_entregador
+        AND codigo_vino = p_codigo_vino
+        AND fecha = p_fecha;
+
         DELETE FROM Pides WHERE
             codigo_pedidor = p_codigo_pedidor AND
             codigo_entregador = p_codigo_entregador AND
@@ -367,12 +402,14 @@ BEGIN
             fecha = p_fecha;
     END IF;
 
+    UPDATE Vinos SET cantidadStock = v_cantidad_disponible + v_cantidad, cantidadProducida = v_cantidad_producida WHERE codigo = p_codigo_vino;
+
     DBMS_OUTPUT.PUT_LINE('Pedido borada exitosamente.');
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-END nuevaPedida;
+END bajaPedida;
 
 create or replace PROCEDURE nuevoVino(
     p_codigo NUMBER,
@@ -403,6 +440,9 @@ BEGIN
             cantidadProducida = cantidadProducidaAntigua + p_cantidadProducida,
             cantidadStock = cantidadStockAntigua + p_cantidadProducida
         WHERE codigo = p_codigo;
+        
+        DBMS_OUTPUT.PUT_LINE('Cantidad añado al vino exitosamente.');
+        COMMIT;
     ELSE
         INSERT INTO Vinos (
             codigo,
@@ -427,10 +467,10 @@ BEGIN
             p_cantidadProducida,
             p_codigo_productor
         );
+        
+        DBMS_OUTPUT.PUT_LINE('Vino creado exitosamente.');
+        COMMIT;
     END IF;
-
-    DBMS_OUTPUT.PUT_LINE('Vino creado exitosamente.');
-    COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
