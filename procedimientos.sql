@@ -188,66 +188,69 @@ CREATE OR REPLACE PROCEDURE nuevoSuministro(
     p_cantidad NUMBER
 ) AS
     v_exists NUMBER;
-    v_comunidad_autonoma_cliente VARCHAR2,
-    v_comunidad_autonoma_sucursal VARCHAR2,
-    v_comunidad_autonoma_vino VARCHAR2,
-    v_codigo_sucursal_entregador NUMBER
-
+    v_localidad_cliente VARCHAR2(100);
+    v_localidad_sucursal VARCHAR2(100);
+    v_localidad_vino VARCHAR2(100);
 BEGIN
-
+    -- Check if the supply already exists
     SELECT COUNT(*)
     INTO v_exists
     FROM Suministros
     WHERE codigo_sucursal = p_codigo_sucursal
-    AND codigo_vino = p_codigo_vino
-    AND fecha = p_fecha_solicitud;
+      AND codigo_vino = p_codigo_vino
+      AND fecha = p_fecha_solicitud;
 
-    SELECT comunidadAutonoma -- get comunidad autonoma for first ELSE IF statement
-    INTO v_comunidad_autonoma_sucursal
-    FROM Sucursales
-    WHERE codigo = p_codigo_sucursal;
+    SELECT localidad INTO v_localidad_cliente
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.cliente WHERE codigo = p_codigo_cliente
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.cliente WHERE codigo = p_codigo_cliente
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.cliente WHERE codigo = p_codigo_cliente
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.cliente WHERE codigo = p_codigo_cliente
+    );
 
-    SELECT comunidadAutonoma -- get comunidad autonoma for first ELSE IF statement
-    INTO v_comunidad_autonoma_cliente
-    FROM Clientes
-    WHERE codigo = p_codigo_cliente;
+    SELECT localidad INTO v_localidad_sucursal
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.sucursal WHERE codigo = p_codigo_sucursal
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.sucursal WHERE codigo = p_codigo_sucursal
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.sucursal WHERE codigo = p_codigo_sucursal
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.sucursal WHERE codigo = p_codigo_sucursal
+    );
 
-    SELECT comunidadAutonoma -- get comunidad autonoma for second IF statement
-    INTO v_comunidad_autonoma_vino
-    FROM Vinos
-    WHERE codigo = p.codigo_vino;
+    SELECT localidad INTO v_localidad_vino
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.vino WHERE codigo = p_codigo_vino
+    );
 
-
-    IF v_exists > 0 THEN -- suministro already exists and only the additional amount needs to be added
+    IF v_exists > 0 THEN
+        -- Supply already exists; update the quantity
         UPDATE Suministros
         SET cantidad = cantidad + p_cantidad
         WHERE codigo_sucursal = p_codigo_sucursal
-        AND codigo_vino = p_codigo_vino
-        AND fecha = p_fecha_solicitud;
-        DBMS_OUTPUT.PUT_LINE('Suministro creada');
+          AND codigo_vino = p_codigo_vino
+          AND fecha = p_fecha_solicitud;
+        DBMS_OUTPUT.PUT_LINE('Suministro actualizado');
 
-    ELSE IF v_comunidad_autonoma_cliente = v_comunidad_autonoma_sucursal -- customer is in the same CA as the sucursal
-
-        IF v_comunidad_autonoma_vino = v_comunidad_autonoma_sucursal -- check if the requested vine is distributed by the customer's sucursal
-            INSERT INTO Suministros(cantidad, fecha, codigo_vino, p_codigo_cliente, codigo_sucursal)
-            VALUES (p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal);
-            DBMS_OUTPUT.PUT_LINE('Suministro creada');
-        ELSE -- Wine is not distributed by the customer's sucursal
-            SELECT FIRST codigo -- get the codigo of a sucursal which can provide the requested vine. If there are more than one, the first will be chosen
-            INTO v_codigo_sucursal_entregador
-            FROM Sucursales
-            WHERE comunidadAutonoma = v_comunidad_autonoma_vino;
-
-            EXEC nuevoPedido(v_codigo_sucursal_entregador, p_codigo_sucursal, p_codigo_vino, p_fecha_solicitud, p_cantidad); -- Customer's sucursal orders wine from another sucursal which distributes it
-            INSERT INTO Suministros(cantidad, fecha, codigo_vino, p_codigo_cliente, codigo_sucursal)
-            VALUES (p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal);
-            DBMS_OUTPUT.PUT_LINE('Suministro creada');
-        END IF;
-
-    ELSE -- customer is not in the same CA as the sucursal
-        DBMS_OUTPUT.PUT_LINE('An order can only be placed with a Sucursal that is in your own Comunidad Autonoma');
+    ELSIF v_localidad_cliente = v_localidad_sucursal AND v_localidad_sucursal = v_localidad_vino THEN
+        -- Use EXECUTE IMMEDIATE for dynamic SQL
+        EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad_cliente || '.suministro (cantidad, fecha, codigo_vino, codigo_cliente, codigo_sucursal)
+        VALUES (:1, :2, :3, :4, :5)' USING p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal;
+        DBMS_OUTPUT.PUT_LINE('Suministro creado');
+    ELSE
+        -- The localidades do not match between cliente, sucursal and vino
+        DBMS_OUTPUT.PUT_LINE('The requested vine is not distributed by the selected sucursal');
     END IF;
-    
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
