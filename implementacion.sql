@@ -68,7 +68,6 @@ CREATE TABLE Pide( --CD
    codigo_pedidor NUMBER(10) NOT NULL,
    codigo_entregador NUMBER(10) NOT NULL,
    FOREIGN KEY(codigo_vino) REFERENCES Vino(codigo),
-   FOREIGN KEY(codigo_pedidor) REFERENCES Sucursal(codigo),
    FOREIGN KEY(codigo_entregador) REFERENCES Sucursal(codigo)
 );
 
