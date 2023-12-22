@@ -167,8 +167,8 @@ BEGIN
             RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
     END CASE;
 
-    EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad || '.Vino(codigo, marca, comunidadAutonoma, año, denominacionDeOrigen, graduacion, viñedoDeProcedencia, cantidadProducida, cantidadStock, codigo_productor, codigo_sucursal) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11)'
-    USING :NEW.codigo, :NEW.marca, :NEW.comunidadAutonoma, :NEW.año, :NEW.denominacionDeOrigen, :NEW.graduacion, :NEW.viñedoDeProcedencia, :NEW.cantidadProducida, :NEW.cantidadStock, :NEW.codigo_productor, :NEW.codigo_sucursal;
+    EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad || '.Vino(codigo, marca, comunidadAutonoma, año, denominacionDeOrigen, graduacion, viñedoDeProcedencia, cantidadProducida, cantidadStock, codigo_productor) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)'
+    USING :NEW.codigo, :NEW.marca, :NEW.comunidadAutonoma, :NEW.año, :NEW.denominacionDeOrigen, :NEW.graduacion, :NEW.viñedoDeProcedencia, :NEW.cantidadProducida, :NEW.cantidadStock, :NEW.codigo_productor;
 END;
 
 CREATE OR REPLACE TRIGGER nuevoPideLocalidad
@@ -462,17 +462,21 @@ DECLARE
     v_localidad VARCHAR2(50);
 BEGIN
     CASE
-        WHEN :NEW.comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
-        WHEN :NEW.comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
-        WHEN :NEW.comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
-        WHEN :NEW.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
+        WHEN :OLD.comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
+        WHEN :OLD.comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
+        WHEN :OLD.comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
+        WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :OLD.comunidadAutonoma);
     END CASE;
+    
+    DBMS_OUTPUT.PUT_LINE('Localidad is : ' || v_localidad);
+    DBMS_OUTPUT.PUT_LINE('director is : ' || :NEW.director);
+    DBMS_OUTPUT.PUT_LINE('codigo is : ' || :NEW.codigo);
 
-    EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Sucursal SET codigo = :1, nombre = :2, ciudad = :3, director = :4, comunidadAutonoma = :5 WHERE codigo = :1'
-    USING :NEW.codigo, :NEW.nombre, :NEW.ciudad, :NEW.director, :NEW.comunidadAutonoma;
+    EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Sucursal SET director = :1 WHERE codigo = :2'
+    USING :NEW.director, :NEW.codigo;
 END;
 
 CREATE OR REPLACE TRIGGER modificarEmpleadoLocalidad

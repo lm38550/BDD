@@ -1,0 +1,38 @@
+EXECUTE nuevoProductor(1, '35353535A', 'Justiniano Briñón', 'Ramón y Cajal 9, Valladolid');
+EXECUTE nuevoProductor(2, '36363636B', 'Marcelino Peña', 'San Francisco 7, Pamplona');
+EXECUTE nuevoProductor(3, '37373737C', 'Paloma Riquelme', 'Antonio Gaudí 23, Barcelona');
+EXECUTE nuevoProductor(4, '38383838D', 'Amador Laguna', 'Juan Ramón Jiménez 17, Córdoba');
+EXECUTE nuevoProductor(5, '39393939E', 'Ramón Esteban', 'Gran Vía de Colón 121, Madrid');
+EXECUTE nuevoProductor(6, '40404040F', 'Carlota Fuentes', 'Cruz de los Ángeles 29, Oviedo');
+
+EXECUTE nuevoVino(1, 'Vega Sicilia', 2003, 'Ribera del Duero', '12.5', 'Castillo Blanco', 'Castilla-León', 200, 1);
+EXECUTE nuevoVino(2, 'Vega Sicilia', 2010, 'Ribera del Duero', '12.5', 'Castillo Blanco', 'Castilla-León', 100, 1);
+EXECUTE nuevoVino(3, 'Marqués de Cáceres', 2014, 'Rioja', '11', 'Santo Domingo', 'La Rioja', 200, 2);
+EXECUTE nuevoVino(4, 'Marqués de Cáceres', 2017, 'Rioja', '11.5', 'Santo Domingo', 'La Rioja', 250, 2);
+EXECUTE nuevoVino(5, 'René Barbier', 2018, 'Penedés', '11.5', 'Virgen de Estrella', 'Cataluña', 200, 3);
+EXECUTE nuevoVino(6, 'René Barbier', 2015, 'Penedés', '11', 'Virgen de Estrella', 'Cataluña', 250, 3);
+EXECUTE nuevoVino(7, 'Rias Baixas', 2019, 'Albariño', '9.5', 'Santa Compaña', 'Galicia', 150, 4);
+EXECUTE nuevoVino(8, 'Rias Baixas', 2018, 'Albariño', '9', 'Santa Compaña', 'Galicia', 100, 4);
+EXECUTE nuevoVino(9, 'Córdoba Bella', 2013, 'Montilla', '12', 'Mezquita Roja', 'Andalucía', 200, 4);
+EXECUTE nuevoVino(10, 'Tío Pepe', 2015, 'Jerez', '12.5', 'Campo Verde', 'Andalucía', 200, 4);
+EXECUTE nuevoVino(13, 'Vega Murciana', 2018, 'Jumilla', '11.5', 'Vega Verde', 'Murcia', 250, 5);
+EXECUTE nuevoVino(14, 'Tablas de Daimiel', 2013, 'Valdepeñas', '11.5', 'Laguna Azul', 'Castilla-La Mancha', 300, 5);
+EXECUTE nuevoVino(15, 'Santa María', 2018, 'Tierra de Cangas', '10', 'Monte Astur', 'Asturias', 200, 6);
+EXECUTE nuevoVino(16, 'Freixenet', 2019, 'Cava', '7.5', 'Valle Dorado', 'Cataluña', 250, 6);
+EXECUTE nuevoVino(17, 'Estela', 2017, 'Cariñena', '10.5', 'San Millán', 'Aragón', 200, 3);
+EXECUTE nuevoVino(18, 'Uva dorada', 2018, 'Málaga', '13', 'Axarquía', 'Andalucía', 200, 5);
+EXECUTE nuevoVino(19, 'Meigas Bellas', 2019, 'Ribeiro', '8.5', 'Mayor Santiago', 'Galicia', 250, 6);
+EXECUTE nuevoVino(20, 'Altamira', 2019, 'Tierra de Liébana', '9.5', 'Cuevas', 'Cantabria', 300, 1);
+EXECUTE nuevoVino(21, 'Virgen negra', 2019, 'Islas Canarias', '10.5', 'Guanche', 'Canarias', 300, 3);
+
+EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', 1);
+EXECUTE nuevaSucursal(3, 'Tacita de Plata', 'Cádiz', 'Andalucía', 5);
+EXECUTE nuevaSucursal(4, 'Almudena', 'Madrid', 'Madrid', 7);
+EXECUTE nuevaSucursal(5, 'El Cid', 'Burgos', 'Castilla-León', 9);
+EXECUTE nuevaSucursal(6, 'Puente la Reina', 'Logroño', 'La Rioja', 11);
+EXECUTE nuevaSucursal(7, 'Catedral del Mar', 'Barcelona', 'Cataluña', 13);
+EXECUTE nuevaSucursal(8, 'Dama de Elche', 'Alicante', 'País Valenciano', 15);
+EXECUTE nuevaSucursal(9, 'La Cartuja', 'Palma de Mallorca', 'Baleares', 17);
+EXECUTE nuevaSucursal(10, 'Meigas', 'La Coruña', 'Galicia', 19);
+EXECUTE nuevaSucursal(11, 'La Concha', 'San Sebastián', 'País Vasco', 21);
+EXECUTE nuevaSucursal(12, 'Don Pelayo', 'Oviedo', 'Asturias', 23);
