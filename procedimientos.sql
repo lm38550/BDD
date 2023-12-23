@@ -206,8 +206,6 @@ BEGIN
     WHERE codigo_sucursal = p_codigo_sucursal
       AND codigo_vino = p_codigo_vino
       AND fecha = p_fecha_solicitud;
-      AND codigo_vino = p_codigo_vino
-      AND fecha = p_fecha_solicitud;
 
     SELECT localidad INTO v_localidad_cliente
     FROM (
@@ -247,9 +245,6 @@ BEGIN
         UPDATE Suministros
         SET cantidad = cantidad + p_cantidad
         WHERE codigo_sucursal = p_codigo_sucursal
-          AND codigo_vino = p_codigo_vino
-          AND fecha = p_fecha_solicitud;
-        DBMS_OUTPUT.PUT_LINE('Suministro actualizado');
           AND codigo_vino = p_codigo_vino
           AND fecha = p_fecha_solicitud;
         DBMS_OUTPUT.PUT_LINE('Suministro actualizado');
