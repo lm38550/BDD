@@ -192,64 +192,24 @@ create or replace PROCEDURE nuevoSuministro(
     p_codigo_vino NUMBER,
     p_fecha_solicitud DATE,
     p_cantidad NUMBER
-) AS
-    v_exists NUMBER;
-    v_comunidad_autonoma_cliente VARCHAR2(100);
-    v_comunidad_autonoma_sucursal VARCHAR2(100);
-    v_comunidad_autonoma_vino VARCHAR2(100);
+) IS
 BEGIN
-    -- Check if the supply already exists
-    SELECT COUNT(*)
-    INTO v_exists
-    FROM Suministros
-    WHERE codigo_sucursal = p_codigo_sucursal
-      AND codigo_vino = p_codigo_vino
-      AND fecha = p_fecha_solicitud;
-
-    -- Get comunidad autonoma for the sucursal
-    SELECT comunidadAutonoma
-    INTO v_comunidad_autonoma_sucursal
-    FROM Sucursales
-    WHERE codigo = p_codigo_sucursal;
-
-    -- Get comunidad autonoma for the customer
-    SELECT comunidadAutonoma
-    INTO v_comunidad_autonoma_cliente
-    FROM Clientes
-    WHERE codigo = p_codigo_cliente;
-
-    -- Get comunidad autonoma for the wine
-    SELECT comunidadAutonoma
-    INTO v_comunidad_autonoma_vino
-    FROM Vinos
-    WHERE codigo = p_codigo_vino;
-
-    IF v_exists > 0 THEN
-        -- Supply already exists; update the quantity
-        UPDATE Suministros
-        SET cantidad = cantidad + p_cantidad
-        WHERE codigo_sucursal = p_codigo_sucursal
-          AND codigo_vino = p_codigo_vino
-          AND fecha = p_fecha_solicitud;
-        DBMS_OUTPUT.PUT_LINE('Suministro actualizado');
-
-    ELSIF v_comunidad_autonoma_cliente = v_comunidad_autonoma_sucursal THEN
-        -- Customer is in the same CA as the sucursal
-        IF v_comunidad_autonoma_vino = v_comunidad_autonoma_sucursal THEN
-            -- The requested wine is distributed by the customer's sucursal
-            INSERT INTO Suministros(cantidad, fecha, codigo_vino, codigo_cliente, codigo_sucursal)
-            VALUES (p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal);
-            DBMS_OUTPUT.PUT_LINE('Suministro creado');
-        ELSE
-            -- Wine is not distributed by the customer's sucursal
-            DBMS_OUTPUT.PUT_LINE('El vino no está distribuido por la sucursal seleccionada');
-        END IF;
-
-    ELSE
-        -- Customer is not in the same CA as the sucursal
-        DBMS_OUTPUT.PUT_LINE('Un pedido solo se puede realizar con una sucursal de tu propia Comunidad Autónoma');
-    END IF;
-
+    INSERT INTO Suministros (
+        CANTIDAD,
+        FECHA,
+        CODIGO_VINO,
+        CODIGO_CLIENTE,
+        CODIGO_SUCURSAL
+    ) VALUES (
+        p_cantidad,
+        p_fecha_solicitud,
+        p_codigo_vino,
+        p_codigo_cliente,
+        p_codigo_sucursal
+    );
+    
+    DBMS_OUTPUT.PUT_LINE('Suministro creado');
+    
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN

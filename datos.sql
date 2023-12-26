@@ -25,7 +25,10 @@ EXECUTE nuevoVino(19, 'Meigas Bellas', 2019, 'Ribeiro', '8.5', 'Mayor Santiago',
 EXECUTE nuevoVino(20, 'Altamira', 2019, 'Tierra de Liébana', '9.5', 'Cuevas', 'Cantabria', 300, 1);
 EXECUTE nuevoVino(21, 'Virgen negra', 2019, 'Islas Canarias', '10.5', 'Guanche', 'Canarias', 300, 3);
 
-EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', 1);
+EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', NULL);
+
+EXECUTE nuevaSucursal(2 )
+
 EXECUTE nuevaSucursal(3, 'Tacita de Plata', 'Cádiz', 'Andalucía', 5);
 EXECUTE nuevaSucursal(4, 'Almudena', 'Madrid', 'Madrid', 7);
 EXECUTE nuevaSucursal(5, 'El Cid', 'Burgos', 'Castilla-León', 9);
@@ -36,3 +39,86 @@ EXECUTE nuevaSucursal(9, 'La Cartuja', 'Palma de Mallorca', 'Baleares', 17);
 EXECUTE nuevaSucursal(10, 'Meigas', 'La Coruña', 'Galicia', 19);
 EXECUTE nuevaSucursal(11, 'La Concha', 'San Sebastián', 'País Vasco', 21);
 EXECUTE nuevaSucursal(12, 'Don Pelayo', 'Oviedo', 'Asturias', 23);
+
+EXECUTE nuevoEmpleado(1, '11111111A', 'Raúl', 'Sierpes 37, Sevilla', TO_DATE('21092005', 'DDMMYYYY'), 2000, 1);
+EXECUTE nuevoEmpleado(2, '22222222B', 'Federico', 'Emperatriz 25, Sevilla', TO_DATE('25082004', 'DDMMYYYY'), 1800, 1);
+EXECUTE nuevoEmpleado(3, '33333333C', 'Natalia', 'Ronda 126, Granada', TO_DATE('30012007', 'DDMMYYYY'), 2000, 2);
+EXECUTE nuevoEmpleado(4, '44444444D', 'Amalia', 'San Matías 23, Granada', TO_DATE('13022008', 'DDMMYYYY'), 1800, 2);
+EXECUTE nuevoEmpleado(5, '55555555E', 'Susana', 'Zoraida 5, Cádiz', TO_DATE('01102013', 'DDMMYYYY'), 2000, 3);
+EXECUTE nuevoEmpleado(6, '66666666F', 'Gonzalo', 'Tartesos 9, Cádiz', TO_DATE('01012002', 'DDMMYYYY'), 1800, 3);
+EXECUTE nuevoEmpleado(7, '77777777G', 'Agustín', 'Pablo Neruda 84, Madrid', TO_DATE('05052014', 'DDMMYYYY'), 2000, 4);
+EXECUTE nuevoEmpleado(8, '88888888H', 'Eduardo', 'Alcalá 8, Madrid', TO_DATE('06062014', 'DDMMYYYY'), 1800, 4);
+EXECUTE nuevoEmpleado(9, '99999999I', 'Alberto', 'Las Huelgas 15, Burgos', TO_DATE('05092015', 'DDMMYYYY'), 2000, 5);
+EXECUTE nuevoEmpleado(10, '10101010J', 'Soraya', 'Jimena 2, Burgos', TO_DATE('04102012', 'DDMMYYYY'), 1800, 5);
+EXECUTE nuevoEmpleado(11, '01010101K', 'Manuel', 'Estrella 26, Logroño', TO_DATE('06072011', 'DDMMYYYY'), 2000, 6);
+EXECUTE nuevoEmpleado(12, '12121212L', 'Emilio', 'Constitución 3, Logroño', TO_DATE('05112013', 'DDMMYYYY'), 1800, 6);
+EXECUTE nuevoEmpleado(13, '13131313M', 'Patricia', 'Diagonal 132, Barcelona', TO_DATE('04122014', 'DDMMYYYY'), 2000, 7);
+EXECUTE nuevoEmpleado(14, '14141414N', 'Inés', 'Colón 24, Barcelona', TO_DATE('07032013', 'DDMMYYYY'), 1800, 7);
+EXECUTE nuevoEmpleado(15, '15151515º', 'Carlos', 'Palmeras 57, Alicante', TO_DATE('16062014', 'DDMMYYYY'), 2000, 8);
+EXECUTE nuevoEmpleado(16, '16161616P', 'Dolores', 'Calatrava 9, Alicante', TO_DATE('14052013', 'DDMMYYYY'), 1800, 8);
+EXECUTE nuevoEmpleado(17, '17171717Q', 'Elías', 'Arenal 17, P. Mallorca', TO_DATE('13062014', 'DDMMYYYY'), 2000, 9);
+EXECUTE nuevoEmpleado(18, '18181818R', 'Concepción', 'Campastilla 14, P. Mallorca', TO_DATE('18082015', 'DDMMYYYY'), 1800, 9);
+EXECUTE nuevoEmpleado(19, '19191919S', 'Gabriel', 'Hércules 19, La Coruña', TO_DATE('19092010', 'DDMMYYYY'), 2000, 10);
+EXECUTE nuevoEmpleado(20, '20202020T', 'Octavio', 'María Pita 45, La Coruña', TO_DATE('20102012', 'DDMMYYYY'), 1800, 10);
+EXECUTE nuevoEmpleado(21, '21212121V', 'Cesar', 'Las Peñas 41, San Sebastián', TO_DATE('13112016', 'DDMMYYYY'), 2000, 11);
+EXECUTE nuevoEmpleado(22, '23232323W', 'Julia', 'San Cristóbal 5, San Sebastián', TO_DATE('24032015', 'DDMMYYYY'), 1800, 11);
+EXECUTE nuevoEmpleado(23, '24242424X', 'Claudia', 'Santa Cruz 97, Oviedo', TO_DATE('13022017', 'DDMMYYYY'), 2000, 12);
+EXECUTE nuevoEmpleado(24, '25252525Z', 'Mario', 'Naranco 21, Oviedo', TO_DATE('23042012', 'DDMMYYYY'), 1800, 12);
+
+EXECUTE cambiarDirector(1, 1);
+
+EXECUTE nuevoCliente(1, '26262626A', 'A', 'Hipercor', 'Virgen de la Capilla 32, Jaén', 'Andalucía');
+EXECUTE nuevoCliente(2, '27272727B', 'C', 'Restaurante Cacereño', 'San Marcos 41, Cáceres', 'Extremadura');
+EXECUTE nuevoCliente(3, '28282828C', 'A', 'Continente', 'San Francisco 37, Vigo', 'Galicia');
+EXECUTE nuevoCliente(4, '29292929D', 'C', 'Restaurante El Asturiano', 'Covadonga 24, Luarca', 'Asturias');
+EXECUTE nuevoCliente(5, '30303030E', 'C', 'Restaurante El Payés', 'San Lucas 33, Mahón', 'Baleares');
+EXECUTE nuevoCliente(6, '31313131F', 'A', 'Mercadona', 'Desamparados 29, Castellón', 'País Valenciano');
+EXECUTE nuevoCliente(7, '32323232G', 'C', 'Restaurante Cándido', 'Acueducto 1, Segovia', 'Castilla-León');
+EXECUTE nuevoCliente(8, '34343434H', 'C', 'Restaurante Las Vidrieras', 'Cervantes 16, Almagro', 'Castilla-La Mancha');
+
+EXECUTE nuevaPedida(1, 4, 4, TO_DATE('13062023', 'DDMMYYYY'), 100);
+EXECUTE nuevaPedida(1, 10, 7, TO_DATE('05052023', 'DDMMYYYY'), 50);
+EXECUTE nuevaPedida(2, 7, 5, TO_DATE('12072023', 'DDMMYYYY'), 150);
+EXECUTE nuevaPedida(2, 5, 2, TO_DATE('04042023', 'DDMMYYYY'), 20);
+EXECUTE nuevaPedida(2, 8, 6, TO_DATE('16092023', 'DDMMYYYY'), 40);
+EXECUTE nuevaPedida(3, 6, 14, TO_DATE('15072023', 'DDMMYYYY'), 200);
+EXECUTE nuevaPedida(3, 9, 16, TO_DATE('21092023', 'DDMMYYYY'), 100);
+EXECUTE nuevaPedida(4, 1, 10, TO_DATE('22062023', 'DDMMYYYY'), 70);
+EXECUTE nuevaPedida(4, 7, 6, TO_DATE('22052023', 'DDMMYYYY'), 70);
+EXECUTE nuevaPedida(5, 10, 7, TO_DATE('18042023', 'DDMMYYYY'), 50);
+EXECUTE nuevaPedida(7, 2, 21, TO_DATE('18092023', 'DDMMYYYY'), 200);
+EXECUTE nuevaPedida(8, 11, 15, TO_DATE('14012023', 'DDMMYYYY'), 100);
+EXECUTE nuevaPedida(8, 2, 9, TO_DATE('20022023', 'DDMMYYYY'), 150);
+EXECUTE nuevaPedida(9, 3, 18, TO_DATE('02102023', 'DDMMYYYY'), 100);
+EXECUTE nuevaPedida(9, 12, 19, TO_DATE('28062023', 'DDMMYYYY'), 160);
+EXECUTE nuevaPedida(10, 4, 3, TO_DATE('22022023', 'DDMMYYYY'), 100);
+EXECUTE nuevaPedida(10, 8, 6, TO_DATE('02082023', 'DDMMYYYY'), 90);
+EXECUTE nuevaPedida(11, 9, 13, TO_DATE('04102023', 'DDMMYYYY'), 200);
+EXECUTE nuevaPedida(12, 4, 17, TO_DATE('04052023', 'DDMMYYYY'), 70);
+
+EXECUTE nuevoSuministro(1, 1, 4, TO_DATE('12062023', 'DDMMYYYY'), 100);
+EXECUTE nuevoSuministro(1, 2, 5, TO_DATE('11072023', 'DDMMYYYY'), 150);
+EXECUTE nuevoSuministro(1, 3, 14, TO_DATE('15072023', 'DDMMYYYY'), 200);
+EXECUTE nuevoSuministro(2, 2, 2, TO_DATE('03042023', 'DDMMYYYY'), 20);
+EXECUTE nuevoSuministro(2, 1, 7, TO_DATE('04052023', 'DDMMYYYY'), 50);
+EXECUTE nuevoSuministro(2, 2, 6, TO_DATE('15092023', 'DDMMYYYY'), 40);
+EXECUTE nuevoSuministro(2, 3, 16, TO_DATE('20092023', 'DDMMYYYY'), 100);
+EXECUTE nuevoSuministro(3, 10, 3, TO_DATE('21022023', 'DDMMYYYY'), 100);
+EXECUTE nuevoSuministro(3, 10, 6, TO_DATE('02082023', 'DDMMYYYY'), 90);
+EXECUTE nuevoSuministro(3, 11, 13, TO_DATE('03102023', 'DDMMYYYY'), 200);
+EXECUTE nuevoSuministro(3, 12, 20, TO_DATE('04112023', 'DDMMYYYY'), 150);
+EXECUTE nuevoSuministro(4, 12, 8, TO_DATE('01032023', 'DDMMYYYY'), 50);
+EXECUTE nuevoSuministro(4, 12, 17, TO_DATE('03052023', 'DDMMYYYY'), 70);
+EXECUTE nuevoSuministro(5, 7, 16, TO_DATE('14082023', 'DDMMYYYY'), 50);
+EXECUTE nuevoSuministro(5, 9, 18, TO_DATE('01102023', 'DDMMYYYY'), 100);
+EXECUTE nuevoSuministro(6, 8, 15, TO_DATE('13012023', 'DDMMYYYY'), 100);
+EXECUTE nuevoSuministro(6, 8, 9, TO_DATE('19022023', 'DDMMYYYY'), 150);
+EXECUTE nuevoSuministro(6, 9, 19, TO_DATE('27062023', 'DDMMYYYY'), 160);
+EXECUTE nuevoSuministro(6, 7, 21, TO_DATE('17092023', 'DDMMYYYY'), 200);
+EXECUTE nuevoSuministro(7, 4, 1, TO_DATE('15022023', 'DDMMYYYY'), 80);
+EXECUTE nuevoSuministro(7, 5, 7, TO_DATE('17042023', 'DDMMYYYY'), 50);
+EXECUTE nuevoSuministro(7, 4, 10, TO_DATE('21062023', 'DDMMYYYY'), 70);
+EXECUTE nuevoSuministro(7, 5, 12, TO_DATE('23072023', 'DDMMYYYY'), 40);
+EXECUTE nuevoSuministro(8, 6, 14, TO_DATE('11012023', 'DDMMYYYY'), 50);
+EXECUTE nuevoSuministro(8, 6, 4, TO_DATE('14032023', 'DDMMYYYY'), 60);
+EXECUTE nuevoSuministro(8, 4, 6, TO_DATE('21052023', 'DDMMYYYY'), 70);
