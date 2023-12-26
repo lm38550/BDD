@@ -1,8 +1,34 @@
-Triggers:
-modificarEmpleadoLocalidad -> test
-nuevoSuministroLocalidad -> test
+Precedimiento : 
+    L Check codigo in every nuev@.....
+    F nuevaSucursal check if director exist in empleados
+    L nuevaPedida check if codigo_pedidor exists in sucusales
+    F nuevoSuministro show error message when cliente isn't in the same localidad as the vino
+    F cambiarDirector check if the director is already a director with this ID
+    F nuevoCliente only work with ABC
+    F nuevoSuministro can't create with en earlier date than the last one
+    F nuevoSuministro have to update the vino cantidadStock (you can see on nuevaPedida)
+    L bajaVino can delete if cantidad no es 0 BUT need to have no suministro
+    L bajaProductor 1 check if there is suministro of his vinos
+                  2 we need to delete the vino to delete the productor
+    L nuevaPedida can order in the same localidad
+    L nuevaPedida can't order back in time (for same sucusales AND vino)
 
+Datas : 
+    L nuevaSucursal -> director = NULL
+    L + cambiarDirector
 
-Functions:
-transladarEmpleado
-nuevoSuministro -> by localidad instead of CA. Check Vine Nr. 5
+F DOCUMENTATION
+
+L “Listar los clientes (nombre y dirección) de Andalucía o Castilla-La Mancha y las
+sucursales (nombre y ciudad), a los que se le ha suministrado vino de marca “Tablas
+de Daimiel” entre el 1 de Enero de 2023 y el 1 de septiembre de 2023.
+
+L Dado por teclado el código de un productor: “Listar la marca, el año de cosecha de
+cada uno de los vinos producidos por él y la cantidad total suministrada de cada uno
+de ellos a clientes de las comunidades autónomas de Baleares, Extremadura o País
+Valenciano.
+
+F Dado por teclado el código de una sucursal: “Listar el nombre de cada uno de sus
+clientes, su tipo y la cantidad total vino de Rioja o Albariño que se le ha suministrado
+a cada uno de ellos (solamente deberán aparecer aquellos clientes a los que se les ha
+suministrado vinos con esta denominación de origen).

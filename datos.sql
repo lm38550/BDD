@@ -25,7 +25,10 @@ EXECUTE nuevoVino(19, 'Meigas Bellas', 2019, 'Ribeiro', '8.5', 'Mayor Santiago',
 EXECUTE nuevoVino(20, 'Altamira', 2019, 'Tierra de Liébana', '9.5', 'Cuevas', 'Cantabria', 300, 1);
 EXECUTE nuevoVino(21, 'Virgen negra', 2019, 'Islas Canarias', '10.5', 'Guanche', 'Canarias', 300, 3);
 
-EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', 1);
+EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', NULL);
+
+EXECUTE nuevaSucursal(2 )
+
 EXECUTE nuevaSucursal(3, 'Tacita de Plata', 'Cádiz', 'Andalucía', 5);
 EXECUTE nuevaSucursal(4, 'Almudena', 'Madrid', 'Madrid', 7);
 EXECUTE nuevaSucursal(5, 'El Cid', 'Burgos', 'Castilla-León', 9);
@@ -61,6 +64,8 @@ EXECUTE nuevoEmpleado(21, '21212121V', 'Cesar', 'Las Peñas 41, San Sebastián',
 EXECUTE nuevoEmpleado(22, '23232323W', 'Julia', 'San Cristóbal 5, San Sebastián', TO_DATE('24032015', 'DDMMYYYY'), 1800, 11);
 EXECUTE nuevoEmpleado(23, '24242424X', 'Claudia', 'Santa Cruz 97, Oviedo', TO_DATE('13022017', 'DDMMYYYY'), 2000, 12);
 EXECUTE nuevoEmpleado(24, '25252525Z', 'Mario', 'Naranco 21, Oviedo', TO_DATE('23042012', 'DDMMYYYY'), 1800, 12);
+
+EXECUTE cambiarDirector(1, 1);
 
 EXECUTE nuevoCliente(1, '26262626A', 'A', 'Hipercor', 'Virgen de la Capilla 32, Jaén', 'Andalucía');
 EXECUTE nuevoCliente(2, '27272727B', 'C', 'Restaurante Cacereño', 'San Marcos 41, Cáceres', 'Extremadura');

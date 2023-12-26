@@ -213,11 +213,6 @@ DECLARE
     v_localidad_sucursal VARCHAR2(100);
     v_localidad_vino VARCHAR2(100);
 BEGIN
-    DBMS_OUTPUT.PUT_LINE('codigo_cliente: ' || :NEW.codigo_cliente);
-    DBMS_OUTPUT.PUT_LINE('codigo_sucursal: ' || :NEW.codigo_sucursal);
-    DBMS_OUTPUT.PUT_LINE('codigo_vino: ' || :NEW.codigo_vino);
-    DBMS_OUTPUT.PUT_LINE('cantidad: ' || :NEW.cantidad);
-    DBMS_OUTPUT.PUT_LINE('fecha: ' || :NEW.fecha);
 
     -- Check if the supply already exists
     SELECT COUNT(*)
