@@ -1,0 +1,8 @@
+Triggers:
+modificarEmpleadoLocalidad -> test
+nuevoSuministroLocalidad -> test
+
+
+Functions:
+transladarEmpleado
+nuevoSuministro -> by localidad instead of CA. Check Vine Nr. 5

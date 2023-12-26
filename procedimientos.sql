@@ -188,66 +188,69 @@ CREATE OR REPLACE PROCEDURE nuevoSuministro(
     p_cantidad NUMBER
 ) AS
     v_exists NUMBER;
-    v_comunidad_autonoma_cliente VARCHAR2,
-    v_comunidad_autonoma_sucursal VARCHAR2,
-    v_comunidad_autonoma_vino VARCHAR2,
-    v_codigo_sucursal_entregador NUMBER
-
+    v_localidad_cliente VARCHAR2(100);
+    v_localidad_sucursal VARCHAR2(100);
+    v_localidad_vino VARCHAR2(100);
 BEGIN
-
+    -- Check if the supply already exists
     SELECT COUNT(*)
     INTO v_exists
     FROM Suministros
     WHERE codigo_sucursal = p_codigo_sucursal
-    AND codigo_vino = p_codigo_vino
-    AND fecha = p_fecha_solicitud;
+      AND codigo_vino = p_codigo_vino
+      AND fecha = p_fecha_solicitud;
 
-    SELECT comunidadAutonoma -- get comunidad autonoma for first ELSE IF statement
-    INTO v_comunidad_autonoma_sucursal
-    FROM Sucursales
-    WHERE codigo = p_codigo_sucursal;
+    SELECT localidad INTO v_localidad_cliente
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.cliente WHERE codigo = p_codigo_cliente
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.cliente WHERE codigo = p_codigo_cliente
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.cliente WHERE codigo = p_codigo_cliente
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.cliente WHERE codigo = p_codigo_cliente
+    );
 
-    SELECT comunidadAutonoma -- get comunidad autonoma for first ELSE IF statement
-    INTO v_comunidad_autonoma_cliente
-    FROM Clientes
-    WHERE codigo = p_codigo_cliente;
+    SELECT localidad INTO v_localidad_sucursal
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.sucursal WHERE codigo = p_codigo_sucursal
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.sucursal WHERE codigo = p_codigo_sucursal
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.sucursal WHERE codigo = p_codigo_sucursal
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.sucursal WHERE codigo = p_codigo_sucursal
+    );
 
-    SELECT comunidadAutonoma -- get comunidad autonoma for second IF statement
-    INTO v_comunidad_autonoma_vino
-    FROM Vinos
-    WHERE codigo = p.codigo_vino;
+    SELECT localidad INTO v_localidad_vino
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.vino WHERE codigo = p_codigo_vino
+    );
 
-
-    IF v_exists > 0 THEN -- suministro already exists and only the additional amount needs to be added
+    IF v_exists > 0 THEN
+        -- Supply already exists; update the quantity
         UPDATE Suministros
         SET cantidad = cantidad + p_cantidad
         WHERE codigo_sucursal = p_codigo_sucursal
-        AND codigo_vino = p_codigo_vino
-        AND fecha = p_fecha_solicitud;
-        DBMS_OUTPUT.PUT_LINE('Suministro creada');
+          AND codigo_vino = p_codigo_vino
+          AND fecha = p_fecha_solicitud;
+        DBMS_OUTPUT.PUT_LINE('Suministro actualizado');
 
-    ELSE IF v_comunidad_autonoma_cliente = v_comunidad_autonoma_sucursal -- customer is in the same CA as the sucursal
-
-        IF v_comunidad_autonoma_vino = v_comunidad_autonoma_sucursal -- check if the requested vine is distributed by the customer's sucursal
-            INSERT INTO Suministros(cantidad, fecha, codigo_vino, p_codigo_cliente, codigo_sucursal)
-            VALUES (p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal);
-            DBMS_OUTPUT.PUT_LINE('Suministro creada');
-        ELSE -- Wine is not distributed by the customer's sucursal
-            SELECT FIRST codigo -- get the codigo of a sucursal which can provide the requested vine. If there are more than one, the first will be chosen
-            INTO v_codigo_sucursal_entregador
-            FROM Sucursales
-            WHERE comunidadAutonoma = v_comunidad_autonoma_vino;
-
-            EXEC nuevoPedido(v_codigo_sucursal_entregador, p_codigo_sucursal, p_codigo_vino, p_fecha_solicitud, p_cantidad); -- Customer's sucursal orders wine from another sucursal which distributes it
-            INSERT INTO Suministros(cantidad, fecha, codigo_vino, p_codigo_cliente, codigo_sucursal)
-            VALUES (p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal);
-            DBMS_OUTPUT.PUT_LINE('Suministro creada');
-        END IF;
-
-    ELSE -- customer is not in the same CA as the sucursal
-        DBMS_OUTPUT.PUT_LINE('An order can only be placed with a Sucursal that is in your own Comunidad Autonoma');
+    ELSIF v_localidad_cliente = v_localidad_sucursal AND v_localidad_sucursal = v_localidad_vino THEN
+        -- Use EXECUTE IMMEDIATE for dynamic SQL
+        EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad_cliente || '.suministro (cantidad, fecha, codigo_vino, codigo_cliente, codigo_sucursal)
+        VALUES (:1, :2, :3, :4, :5)' USING p_cantidad, p_fecha_solicitud, p_codigo_vino, p_codigo_cliente, p_codigo_sucursal;
+        DBMS_OUTPUT.PUT_LINE('Suministro creado');
+    ELSE
+        -- The localidades do not match between cliente, sucursal and vino
+        DBMS_OUTPUT.PUT_LINE('The requested vine is not distributed by the selected sucursal');
     END IF;
-    
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
@@ -284,3 +287,207 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END bajaSuministro;
 
+
+
+CREATE OR REPLACE PROCEDURE nuevaPedida(
+    p_codigo_pedidor NUMBER,
+    p_codigo_entregador NUMBER,
+    p_codigo_vino NUMBER,
+    p_fecha DATE,
+    p_cantidad NUMBER
+) IS
+    v_communidadAutonomaEntregador VARCHAR2,
+    v_communidadAutonomaVino VARCHAR2,
+    v_cantidad_disponible NUMBER;
+BEGIN
+    SELECT cantidadStock INTO v_cantidad_disponible
+    FROM Vinos
+    WHERE codigo = p_codigo_vino;
+    
+    SELECT comunidadAutonoma INTO v_communidadAutonomaEntregador
+    FROM Sucursales
+    WHERE codigo = p_codigo_entregador;
+
+    SELECT comunidadAutonoma INTO v_communidadAutonomaVino
+    FROM Vinos
+    WHERE codigo = p_codigo_vino;
+
+    IF v_communidadAutonomaEntregador == v_communidadAutonomaVino THEN
+        IF v_cantidad_disponible >= p_cantidad THEN
+            INSERT INTO Pides (
+                codigo_pedidor,
+                codigo_entregador,
+                codigo_vino,
+                fecha,
+                cantidad
+            ) VALUES (
+                p_codigo_pedidor,
+                p_codigo_entregador,
+                p_codigo_vino,
+                p_fecha,
+                p_cantidad
+            );
+            COMMIT;
+
+            UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad WHERE codigo = p_codigo_vino;
+        
+            DBMS_OUTPUT.PUT_LINE('Pedido creada exitosamente.');
+            COMMIT;
+        ELSE
+            -- Handle the case where quantity is not sufficient
+            DBMS_OUTPUT.PUT_LINE('Error: Insufficient quantity.');
+            -- You might want to raise an exception or handle it in a different way
+            RAISE_APPLICATION_ERROR(-20001, 'Insufficient quantity');
+        END IF;
+    ELSE
+        -- Handle the case where quantity is not sufficient
+        DBMS_OUTPUT.PUT_LINE('Error: Este Sucursal no tiene el vino pedido.');
+        -- You might want to raise an exception or handle it in a different way
+        RAISE_APPLICATION_ERROR(-20001, 'Este Sucursal no tiene el vino pedido');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END nuevaPedida;
+
+CREATE OR REPLACE PROCEDURE bajaPedida(
+    p_codigo_pedidor NUMBER,
+    p_codigo_entregador NUMBER,
+    p_codigo_vino NUMBER,
+    p_fecha DATE DEFAULT NULL
+) IS
+BEGIN
+    IF p_fecha == NULL THEN
+        DELETE FROM Pides WHERE
+            codigo_pedidor = p_codigo_pedidor AND
+            codigo_entregador = p_codigo_entregador AND
+            codigo_vino = p_codigo_vino;
+    ELSE
+        DELETE FROM Pides WHERE
+            codigo_pedidor = p_codigo_pedidor AND
+            codigo_entregador = p_codigo_entregador AND
+            codigo_vino = p_codigo_vino AND
+            fecha = p_fecha;
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Pedido borada exitosamente.');
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END nuevaPedida;
+
+create or replace PROCEDURE nuevoVino(
+    p_codigo NUMBER,
+    p_marca VARCHAR2,
+    p_año NUMBER,
+    p_denominacionDeOrigen VARCHAR2 DEFAULT NULL,
+    p_graduacion VARCHAR2,
+    p_viñedoDeProcedencia VARCHAR2,
+    p_comunidadAutonoma VARCHAR2,
+    p_cantidadProducida NUMBER,
+    p_codigo_productor NUMBER
+) IS
+    existeVino NUMBER;
+    cantidadStockAntigua NUMBER;
+    cantidadProducidaAntigua NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO existeVino
+    FROM Vinos
+    WHERE codigo = p_codigo;
+
+    IF existeVino > 0 THEN
+
+        SELECT cantidadStock, cantidadProducida INTO cantidadStockAntigua, cantidadProducidaAntigua
+        FROM Vinos
+        WHERE codigo = p_codigo;
+
+        UPDATE Vinos SET
+            cantidadProducida = cantidadProducidaAntigua + p_cantidadProducida,
+            cantidadStock = cantidadStockAntigua + p_cantidadProducida
+        WHERE codigo = p_codigo;
+    ELSE
+        INSERT INTO Vinos (
+            codigo,
+            marca,
+            comunidadAutonoma,
+            año,
+            denominacionDeOrigen,
+            graduacion,
+            viñedoDeProcedencia,
+            cantidadProducida,
+            cantidadStock,
+            codigo_productor
+        ) VALUES (
+            p_codigo,
+            p_marca,
+            p_comunidadAutonoma,
+            p_año,
+            p_denominacionDeOrigen,
+            p_graduacion,
+            p_viñedoDeProcedencia,
+            p_cantidadProducida,
+            p_cantidadProducida,
+            p_codigo_productor
+        );
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Vino creado exitosamente.');
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END nuevoVino;
+
+create or replace PROCEDURE bajaVino(
+    p_codigo NUMBER
+) IS
+    v_cantidad NUMBER;
+BEGIN
+    SELECT cantidadStock INTO v_cantidad
+    FROM Vinos
+    WHERE codigo = p_codigo;
+
+    IF v_cantidad = 0 THEN
+        DELETE FROM Vinos WHERE codigo = p_codigo;
+        DBMS_OUTPUT.PUT_LINE('Pedido borrado exitosamente.');
+        COMMIT;
+    ELSE
+        -- Gérez le cas où la quantité n'est pas suffisante
+        DBMS_OUTPUT.PUT_LINE('Error: la cantidad no es 0.');
+        -- Vous pouvez lever une exception ou la gérer différemment
+        RAISE_APPLICATION_ERROR(-20001, 'La cantidad no es 0');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END bajaVino;
+
+create or replace PROCEDURE nuevoProductor(
+    p_codigo NUMBER,
+    p_DNI VARCHAR2,
+    p_nombre VARCHAR2,
+    p_direccion VARCHAR2
+) IS
+BEGIN
+    INSERT INTO Productor VALUES (p_codigo, p_DNI, p_nombre, p_direccion);
+
+    DBMS_OUTPUT.PUT_LINE('Productor creado exitosamente.');
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END nuevoProductor;
+
+create or replace PROCEDURE bajaProductor(
+    p_codigo NUMBER
+) IS
+BEGIN
+    DELETE FROM Productor WHERE codigo = p_codigo;
+
+    DBMS_OUTPUT.PUT_LINE('Productor borado exitosamente.');
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END bajaProductor;

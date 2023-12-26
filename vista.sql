@@ -1,7 +1,6 @@
 DROP VIEW Vinos;
 DROP VIEW Suministros;
 DROP VIEW Sucursales;
-DROP VIEW Productores;
 DROP VIEW Pides;
 DROP VIEW Clientes;
 DROP VIEW Empleados;
