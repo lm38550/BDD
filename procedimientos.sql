@@ -277,70 +277,81 @@ create or replace PROCEDURE nuevaPedida(
     p_fecha DATE,
     p_cantidad NUMBER
 ) IS
+    v_codigo NUMBER(10);
     v_localidadEntregador VARCHAR2(50);
     v_localidadVino VARCHAR2(50);
     v_cantidad_disponible NUMBER(10);
     v_cantidad_producida NUMBER;
 BEGIN
+    SELECT COUNT(*) INTO v_codigo
+    FROM Sucursales
+    WHERE codigo = p_codigo_pedidor;
 
-SELECT localidad INTO v_localidadVino
-FROM (
-    SELECT 'erasmus1' AS localidad FROM erasmus1.vino WHERE codigo = p_codigo_vino
-    UNION ALL
-    SELECT 'erasmus2' AS localidad FROM erasmus2.vino WHERE codigo = p_codigo_vino
-    UNION ALL
-    SELECT 'erasmus3' AS localidad FROM erasmus3.vino WHERE codigo = p_codigo_vino
-    UNION ALL
-    SELECT 'erasmus4' AS localidad FROM erasmus4.vino WHERE codigo = p_codigo_vino
-);
+    SELECT localidad INTO v_localidadVino
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.vino WHERE codigo = p_codigo_vino
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.vino WHERE codigo = p_codigo_vino
+    );
 
-SELECT localidad INTO v_localidadEntregador
-FROM (
-    SELECT 'erasmus1' AS localidad FROM erasmus1.sucursal WHERE codigo = p_codigo_entregador
-    UNION ALL
-    SELECT 'erasmus2' AS localidad FROM erasmus2.sucursal WHERE codigo = p_codigo_entregador
-    UNION ALL
-    SELECT 'erasmus3' AS localidad FROM erasmus3.sucursal WHERE codigo = p_codigo_entregador
-    UNION ALL
-    SELECT 'erasmus4' AS localidad FROM erasmus4.sucursal WHERE codigo = p_codigo_entregador
-);
+    SELECT localidad INTO v_localidadEntregador
+    FROM (
+        SELECT 'erasmus1' AS localidad FROM erasmus1.sucursal WHERE codigo = p_codigo_entregador
+        UNION ALL
+        SELECT 'erasmus2' AS localidad FROM erasmus2.sucursal WHERE codigo = p_codigo_entregador
+        UNION ALL
+        SELECT 'erasmus3' AS localidad FROM erasmus3.sucursal WHERE codigo = p_codigo_entregador
+        UNION ALL
+        SELECT 'erasmus4' AS localidad FROM erasmus4.sucursal WHERE codigo = p_codigo_entregador
+    );
 
     SELECT cantidadStock, cantidadProducida INTO v_cantidad_disponible, v_cantidad_producida
     FROM Vinos
     WHERE codigo = p_codigo_vino;
 
-    IF v_localidadVino = v_localidadEntregador THEN
-        IF v_cantidad_disponible >= p_cantidad THEN
-            INSERT INTO Pides (
-                codigo_pedidor,
-                codigo_entregador,
-                codigo_vino,
-                fecha,
-                cantidad
-            ) VALUES (
-                p_codigo_pedidor,
-                p_codigo_entregador,
-                p_codigo_vino,
-                p_fecha,
-                p_cantidad
-            );
-            COMMIT;
+    IF v_codigo > 0 THEN
+        IF v_localidadVino = v_localidadEntregador THEN
+            IF v_cantidad_disponible >= p_cantidad THEN
+                INSERT INTO Pides (
+                    codigo_pedidor,
+                    codigo_entregador,
+                    codigo_vino,
+                    fecha,
+                    cantidad
+                ) VALUES (
+                    p_codigo_pedidor,
+                    p_codigo_entregador,
+                    p_codigo_vino,
+                    p_fecha,
+                    p_cantidad
+                );
+                COMMIT;
 
-            UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad, cantidadProducida = v_cantidad_producida WHERE codigo = p_codigo_vino;
+                UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad, cantidadProducida = v_cantidad_producida WHERE codigo = p_codigo_vino;
 
-            DBMS_OUTPUT.PUT_LINE('Pedido creada exitosamente.');
-            COMMIT;
+                DBMS_OUTPUT.PUT_LINE('Pedido creada exitosamente.');
+                COMMIT;
+            ELSE
+                -- Handle the case where quantity is not sufficient
+                DBMS_OUTPUT.PUT_LINE('Error: Insufficient quantity.');
+                -- You might want to raise an exception or handle it in a different way
+                RAISE_APPLICATION_ERROR(-20001, 'Insufficient quantity');
+            END IF;
         ELSE
             -- Handle the case where quantity is not sufficient
-            DBMS_OUTPUT.PUT_LINE('Error: Insufficient quantity.');
+            DBMS_OUTPUT.PUT_LINE('Error: Este Sucursal no tiene el vino pedido.');
             -- You might want to raise an exception or handle it in a different way
-            RAISE_APPLICATION_ERROR(-20001, 'Insufficient quantity');
+            RAISE_APPLICATION_ERROR(-20001, 'Este Sucursal no tiene el vino pedido');
         END IF;
     ELSE
         -- Handle the case where quantity is not sufficient
-        DBMS_OUTPUT.PUT_LINE('Error: Este Sucursal no tiene el vino pedido.');
+        DBMS_OUTPUT.PUT_LINE('Error: Este Sucursal que quiere pedir no existe.');
         -- You might want to raise an exception or handle it in a different way
-        RAISE_APPLICATION_ERROR(-20001, 'Este Sucursal no tiene el vino pedido');
+        RAISE_APPLICATION_ERROR(-20001, 'Este Sucursal que quiere pedir no existe');
     END IF;
 EXCEPTION
     WHEN OTHERS THEN
