@@ -327,7 +327,7 @@ BEGIN
     WHERE codigo = p_codigo_vino;
 
     IF v_codigo > 0 THEN
-        IF v_localidadPedidor = v_localidadEntregador THEN
+        IF v_localidadPedidor != v_localidadEntregador THEN
             IF v_localidadVino = v_localidadEntregador THEN
                 IF v_cantidad_disponible >= p_cantidad THEN
                     SELECT fecha INTO v_fechaUltima
