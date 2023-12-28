@@ -96,6 +96,8 @@ BEGIN
     COMMIT;
 END transladarEmpleado;
 
+
+
 CREATE OR REPLACE PROCEDURE nuevaSucursal(
     p_codigo NUMBER,
     p_nombre VARCHAR2,
@@ -103,28 +105,39 @@ CREATE OR REPLACE PROCEDURE nuevaSucursal(
     p_comunidadAutonoma VARCHAR2,
     p_director NUMBER DEFAULT NULL
 ) IS
+    v_count NUMBER;
 BEGIN
-    INSERT INTO Sucursales (
-        codigo,
-        nombre,
-        ciudad,
-        comunidadAutonoma,
-        director
-    ) VALUES (
-        p_codigo,
-        p_nombre,
-        p_ciudad,
-        p_comunidadAutonoma,
-        p_director
-    );
-    
-    DBMS_OUTPUT.PUT_LINE('Sucursal creada exitosamente.');
+    SELECT COUNT(*) INTO v_count FROM Sucursales WHERE director = p_director;
+
+    IF v_count > 0 OR p_director IS NULL THEN
+        BEGIN
+            INSERT INTO Sucursales (
+                codigo,
+                nombre,
+                ciudad,
+                comunidadAutonoma,
+                director
+            ) VALUES (
+                p_codigo,
+                p_nombre,
+                p_ciudad,
+                p_comunidadAutonoma,
+                p_director
+            );
+            DBMS_OUTPUT.PUT_LINE('Sucursal creada exitosamente.'); 
+        END;
+    ELSE
+        BEGIN
+            DBMS_OUTPUT.PUT_LINE('Director does not exist');
+        END;
+    END IF;
     
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END nuevaSucursal;
+
 
 
 CREATE OR REPLACE PROCEDURE cambiarDirector(

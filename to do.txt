@@ -1,6 +1,6 @@
 Precedimiento : 
     L Check codigo in every nuev@.....
-    F nuevaSucursal check if director exist in empleados
+    done F nuevaSucursal check if director exist in empleados
     L nuevaPedida check if codigo_pedidor exists in sucusales
     F nuevoSuministro show error message when cliente isn't in the same localidad as the vino
     F cambiarDirector check if the director is already a director with this ID

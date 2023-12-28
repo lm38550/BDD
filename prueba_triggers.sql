@@ -19,3 +19,7 @@ EXECUTE nuevoSuministro (3, 12, 20, TO_DATE('20231104', 'YYYYMMDD'), 1); ---add 
 
 EXECUTE transladarEmpleado (1, 2); ---same localidad
 EXECUTE transladarEmpleado (1, 4); ---different localidad
+
+EXECUTE nuevaSucursal (13, 'Testsucursal', 'Pamplona', 'Galicia'); --- working new sucursal without director
+EXECUTE nuevaSucursal (13, 'Testsucursal', 'Pamplona', 'Galicia', 9999); --- wrong director
+
