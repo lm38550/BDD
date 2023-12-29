@@ -206,29 +206,35 @@ create or replace PROCEDURE nuevoSuministro(
     p_fecha_solicitud DATE,
     p_cantidad NUMBER
 ) IS
+    v_max_date DATE;
 BEGIN
-    INSERT INTO Suministros (
-        CANTIDAD,
-        FECHA,
-        CODIGO_VINO,
-        CODIGO_CLIENTE,
-        CODIGO_SUCURSAL
-    ) VALUES (
-        p_cantidad,
-        p_fecha_solicitud,
-        p_codigo_vino,
-        p_codigo_cliente,
-        p_codigo_sucursal
-    );
-    
-    DBMS_OUTPUT.PUT_LINE('Suministro creado');
-    
-    COMMIT;
+    SELECT MAX(FECHA) INTO v_max_date
+    FROM Suministros
+    WHERE CODIGO_CLIENTE = p_codigo_cliente;
+
+    IF v_max_date IS NULL OR p_fecha_solicitud >= v_max_date THEN
+        INSERT INTO Suministros (
+            CANTIDAD,
+            FECHA,
+            CODIGO_VINO,
+            CODIGO_CLIENTE,
+            CODIGO_SUCURSAL
+        ) VALUES (
+            p_cantidad,
+            p_fecha_solicitud,
+            p_codigo_vino,
+            p_codigo_cliente,
+            p_codigo_sucursal
+        );
+        
+        COMMIT;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The new order date is earlier than existing orders. It cannot be created or updated.');
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END nuevoSuministro;
-
 
 
 CREATE OR REPLACE PROCEDURE bajaSuministro(
