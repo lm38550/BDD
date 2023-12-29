@@ -28,7 +28,7 @@ cada uno de los vinos producidos por él y la cantidad total suministrada de cad
 de ellos a clientes de las comunidades autónomas de Baleares, Extremadura o País
 Valenciano.
 
-F Dado por teclado el código de una sucursal: “Listar el nombre de cada uno de sus
+done F Dado por teclado el código de una sucursal: “Listar el nombre de cada uno de sus
 clientes, su tipo y la cantidad total vino de Rioja o Albariño que se le ha suministrado
 a cada uno de ellos (solamente deberán aparecer aquellos clientes a los que se les ha
 suministrado vinos con esta denominación de origen).
