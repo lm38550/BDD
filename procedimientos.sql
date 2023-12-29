@@ -174,8 +174,13 @@ CREATE OR REPLACE PROCEDURE nuevoCliente(
     p_direccion VARCHAR2,
     p_comunidadAutonoma VARCHAR2
 ) IS
+    v_count NUMBER;
 BEGIN
-    IF p_tipo IN ('A', 'B', 'C') THEN
+    SELECT COUNT(*) INTO v_count FROM Clientes WHERE codigo = p_codigo;
+
+    IF v_count > 0 THEN
+        DBMS_OUTPUT.PUT_LINE('A client with this code already exists');
+    ELSIF p_tipo IN ('A', 'B', 'C') THEN
         INSERT INTO Clientes(
             codigo,
             DNI,

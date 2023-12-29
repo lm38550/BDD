@@ -32,3 +32,9 @@ F Dado por teclado el código de una sucursal: “Listar el nombre de cada uno d
 clientes, su tipo y la cantidad total vino de Rioja o Albariño que se le ha suministrado
 a cada uno de ellos (solamente deberán aparecer aquellos clientes a los que se les ha
 suministrado vinos con esta denominación de origen).
+
+
+
+Questions:
+- do we need to change Clientes?
+- 
