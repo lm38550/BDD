@@ -266,10 +266,34 @@ BEGIN
         EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad_cliente || '.suministro (cantidad, fecha, codigo_vino, codigo_cliente, codigo_sucursal)
         VALUES (:1, :2, :3, :4, :5)' USING :NEW.cantidad, :NEW.fecha, :NEW.codigo_vino, :NEW.codigo_cliente, :NEW.codigo_sucursal;
         DBMS_OUTPUT.PUT_LINE('Suministro creado');
-    ELSE
-        -- The localidades do not match between cliente, sucursal and vino
+
+    ELSIF v_localidad_cliente != v_localidad_sucursal AND v_localidad_sucursal != v_localidad_vino AND v_localidad_cliente != v_localidad_vino THEN
+        DBMS_OUTPUT.PUT_LINE('The locations of the Vino, Sucursal and Client all do not match.');
+
+    ELSIF v_localidad_cliente != v_localidad_sucursal AND v_localidad_sucursal != v_localidad_vino THEN
+        DBMS_OUTPUT.PUT_LINE('You can only order from a sucursal in your location. The selected sucursal does not distribute the selected wine.');
+
+    ELSIF v_localidad_sucursal != v_localidad_vino AND v_localidad_cliente != v_localidad_vino THEN
+        DBMS_OUTPUT.PUT_LINE('The selected sucursal does not distribute the selected wine. The requested wine is not in your location. It, therefore, cannot be ordered.');
+
+    ELSIF v_localidad_cliente != v_localidad_sucursal AND v_localidad_cliente != v_localidad_vino THEN
+        DBMS_OUTPUT.PUT_LINE('The requested wine is not in your location. It, therefore, cannot be ordered. The selected sucursal does not distribute the selected wine.');
+
+    ELSIF v_localidad_cliente != v_localidad_vino THEN
+        DBMS_OUTPUT.PUT_LINE('The requested wine is not in your location. It, therefore, cannot be ordered.');
+
+    ELSIF v_localidad_cliente != v_localidad_sucursal THEN
+        DBMS_OUTPUT.PUT_LINE('You can only order from a sucursal that is in your location.');
+
+    ELSIF v_localidad_sucursal != v_localidad_vino THEN
+    -- The localidades do not match between sucursal and vino
         DBMS_OUTPUT.PUT_LINE('The requested vine is not distributed by the selected sucursal');
+
+    ELSE
+        -- The localidades do not match between sucursal and vino
+        DBMS_OUTPUT.PUT_LINE('Other error. Check your parameters entered.');
     END IF;
+    
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);    
