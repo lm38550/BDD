@@ -145,21 +145,30 @@ CREATE OR REPLACE PROCEDURE cambiarDirector(
     p_codigo_director VARCHAR2
 ) IS
     v_comunidad_autonoma VARCHAR(50);
+    v_director_exists NUMBER;
 BEGIN
-    SELECT comunidadAutonoma INTO v_comunidad_autonoma
+    SELECT COUNT(*) INTO v_director_exists
     FROM Sucursales
-    WHERE codigo = p_codigo_sucursal;
+    WHERE director = p_codigo_director;
 
-    UPDATE Sucursales
-    SET
-        director = p_codigo_director
-    WHERE
-        codigo = p_codigo_sucursal
-    AND
-        comunidadAutonoma = v_comunidad_autonoma;
-    
-    COMMIT;
-    DBMS_OUTPUT.PUT_LINE('Director insertado o actualizado');
+    IF v_director_exists > 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Error: The director is already assigned to another sucursal.');
+    ELSE
+        SELECT comunidadAutonoma INTO v_comunidad_autonoma
+        FROM Sucursales
+        WHERE codigo = p_codigo_sucursal;
+
+        UPDATE Sucursales
+        SET
+            director = p_codigo_director
+        WHERE
+            codigo = p_codigo_sucursal
+        AND
+            comunidadAutonoma = v_comunidad_autonoma;
+        
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('Director insertado o actualizado');
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
