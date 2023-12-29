@@ -175,24 +175,28 @@ CREATE OR REPLACE PROCEDURE nuevoCliente(
     p_comunidadAutonoma VARCHAR2
 ) IS
 BEGIN
-    INSERT INTO Clientes(
-        codigo,
-        DNI,
-        tipo,
-        nombre,
-        direccion,
-        comunidadAutonoma)
-    VALUES(
-        p_codigo,
-        p_DNI,
-        p_tipo,
-        p_nombre,
-        p_direccion,
-        p_comunidadAutonoma);
-    
-    DBMS_OUTPUT.PUT_LINE('Cliente creada');
-    
-    COMMIT;
+    IF p_tipo IN ('A', 'B', 'C') THEN
+        INSERT INTO Clientes(
+            codigo,
+            DNI,
+            tipo,
+            nombre,
+            direccion,
+            comunidadAutonoma)
+        VALUES(
+            p_codigo,
+            p_DNI,
+            p_tipo,
+            p_nombre,
+            p_direccion,
+            p_comunidadAutonoma);
+        
+        DBMS_OUTPUT.PUT_LINE('Cliente creada');
+        
+        COMMIT;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('El cliente debe ser de tipo A, B o C');
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
