@@ -328,14 +328,10 @@ FROM (
         ELSE
             -- Handle the case where quantity is not sufficient
             DBMS_OUTPUT.PUT_LINE('Error: Insufficient quantity.');
-            -- You might want to raise an exception or handle it in a different way
-            RAISE_APPLICATION_ERROR(-20001, 'Insufficient quantity');
         END IF;
     ELSE
         -- Handle the case where quantity is not sufficient
         DBMS_OUTPUT.PUT_LINE('Error: Este Sucursal no tiene el vino pedido.');
-        -- You might want to raise an exception or handle it in a different way
-        RAISE_APPLICATION_ERROR(-20001, 'Este Sucursal no tiene el vino pedido');
     END IF;
 EXCEPTION
     WHEN OTHERS THEN
