@@ -7,7 +7,7 @@ Precedimiento :
     F nuevoCliente only work with ABC
     F nuevoSuministro can't create with en earlier date than the last one
     F nuevoSuministro have to update the vino cantidadStock (you can see on nuevaPedida)
-    L bajaVino can delete if cantidad no es 0 BUT need to have no suministro
+    -DONE- L bajaVino can delete if cantidad no es 0 BUT need to have no suministro
     L bajaProductor 1 check if there is suministro of his vinos
                   2 we need to delete the vino to delete the productor
     -DONE- L nuevaPedida can order in the same localidad

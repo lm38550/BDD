@@ -499,22 +499,10 @@ END nuevoVino;
 create or replace PROCEDURE bajaVino(
     p_codigo NUMBER
 ) IS
-    v_cantidad NUMBER;
 BEGIN
-    SELECT cantidadStock INTO v_cantidad
-    FROM Vinos
-    WHERE codigo = p_codigo;
-
-    IF v_cantidad = 0 THEN
-        DELETE FROM Vinos WHERE codigo = p_codigo;
-        DBMS_OUTPUT.PUT_LINE('Pedido borrado exitosamente.');
-        COMMIT;
-    ELSE
-        -- Gérez le cas où la quantité n'est pas suffisante
-        DBMS_OUTPUT.PUT_LINE('Error: la cantidad no es 0.');
-        -- Vous pouvez lever une exception ou la gérer différemment
-        RAISE_APPLICATION_ERROR(-20001, 'La cantidad no es 0');
-    END IF;
+    DELETE FROM Vinos WHERE codigo = p_codigo;
+    DBMS_OUTPUT.PUT_LINE('Pedido borrado exitosamente.');
+    COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
@@ -539,11 +527,44 @@ END nuevoProductor;
 create or replace PROCEDURE bajaProductor(
     p_codigo NUMBER
 ) IS
+    v_suministosVinos NUMBER(10);
+    v_pidesVinos NUMBER(10);
 BEGIN
-    DELETE FROM Productor WHERE codigo = p_codigo;
+    SELECT COUNT(V.codigo) INTO v_suministosVinos
+    FROM Vinos V, Suministros S
+    WHERE V.codigo_productor = p_codigo
+    AND S.codigo_vino = V.codigo
 
-    DBMS_OUTPUT.PUT_LINE('Productor borado exitosamente.');
-    COMMIT;
+    SELECT COUNT(V.codigo) INTO v_pidesVinos
+    FROM Vinos V, Pides P
+    WHERE V.codigo_productor = p_codigo
+    AND P.codigo_vino = V.codigo
+
+    IF v_pidesVinos = 0 THEN
+        IF v_suministosVinos = 0 THEN
+            SELECT codigo INTO v_vinosProd
+            FROM Vinos
+            WHERE codigo_productor = p_codigo;
+
+            FOR v_row IN SELECT * FROM v_vinosProd
+            LOOP
+                PERFORM bajaVino(v_row.codigo);
+            END LOOP;
+
+            DELETE FROM Productor WHERE codigo = p_codigo;
+
+            DBMS_OUTPUT.PUT_LINE('Productor borado exitosamente.');
+            COMMIT;
+        ELSE
+            -- You might want to raise an exception or handle it in a different way
+            RAISE_APPLICATION_ERROR(-20001, 'Suminitros existen por los vinos de ese productor');
+        END IF;
+    ELSE
+        -- You might want to raise an exception or handle it in a different way
+        RAISE_APPLICATION_ERROR(-20001, 'Pides existen por los vinos de ese productor');
+    END IF;
+
+
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
