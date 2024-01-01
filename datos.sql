@@ -26,19 +26,17 @@ EXECUTE nuevoVino(20, 'Altamira', 2019, 'Tierra de Liébana', '9.5', 'Cuevas', '
 EXECUTE nuevoVino(21, 'Virgen negra', 2019, 'Islas Canarias', '10.5', 'Guanche', 'Canarias', 300, 3);
 
 EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', NULL);
-
-EXECUTE nuevaSucursal(2 )
-
-EXECUTE nuevaSucursal(3, 'Tacita de Plata', 'Cádiz', 'Andalucía', 5);
-EXECUTE nuevaSucursal(4, 'Almudena', 'Madrid', 'Madrid', 7);
-EXECUTE nuevaSucursal(5, 'El Cid', 'Burgos', 'Castilla-León', 9);
-EXECUTE nuevaSucursal(6, 'Puente la Reina', 'Logroño', 'La Rioja', 11);
-EXECUTE nuevaSucursal(7, 'Catedral del Mar', 'Barcelona', 'Cataluña', 13);
-EXECUTE nuevaSucursal(8, 'Dama de Elche', 'Alicante', 'País Valenciano', 15);
-EXECUTE nuevaSucursal(9, 'La Cartuja', 'Palma de Mallorca', 'Baleares', 17);
-EXECUTE nuevaSucursal(10, 'Meigas', 'La Coruña', 'Galicia', 19);
-EXECUTE nuevaSucursal(11, 'La Concha', 'San Sebastián', 'País Vasco', 21);
-EXECUTE nuevaSucursal(12, 'Don Pelayo', 'Oviedo', 'Asturias', 23);
+EXECUTE nuevaSucursal(2, 'Palacios Nazaríes', 'Granada', 'Andalucía' NULL);
+EXECUTE nuevaSucursal(3, 'Tacita de Plata', 'Cádiz', 'Andalucía', NULL);
+EXECUTE nuevaSucursal(4, 'Almudena', 'Madrid', 'Madrid', NULL);
+EXECUTE nuevaSucursal(5, 'El Cid', 'Burgos', 'Castilla-León', NULL);
+EXECUTE nuevaSucursal(6, 'Puente la Reina', 'Logroño', 'La Rioja', NULL);
+EXECUTE nuevaSucursal(7, 'Catedral del Mar', 'Barcelona', 'Cataluña', NULL);
+EXECUTE nuevaSucursal(8, 'Dama de Elche', 'Alicante', 'País Valenciano', NULL);
+EXECUTE nuevaSucursal(9, 'La Cartuja', 'Palma de Mallorca', 'Baleares', NULL);
+EXECUTE nuevaSucursal(10, 'Meigas', 'La Coruña', 'Galicia', NULL);
+EXECUTE nuevaSucursal(11, 'La Concha', 'San Sebastián', 'País Vasco', NULL);
+EXECUTE nuevaSucursal(12, 'Don Pelayo', 'Oviedo', 'Asturias', NULL);
 
 EXECUTE nuevoEmpleado(1, '11111111A', 'Raúl', 'Sierpes 37, Sevilla', TO_DATE('21092005', 'DDMMYYYY'), 2000, 1);
 EXECUTE nuevoEmpleado(2, '22222222B', 'Federico', 'Emperatriz 25, Sevilla', TO_DATE('25082004', 'DDMMYYYY'), 1800, 1);
@@ -66,6 +64,17 @@ EXECUTE nuevoEmpleado(23, '24242424X', 'Claudia', 'Santa Cruz 97, Oviedo', TO_DA
 EXECUTE nuevoEmpleado(24, '25252525Z', 'Mario', 'Naranco 21, Oviedo', TO_DATE('23042012', 'DDMMYYYY'), 1800, 12);
 
 EXECUTE cambiarDirector(1, 1);
+EXECUTE cambiarDirector(2, 3);
+EXECUTE cambiarDirector(3, 5);
+EXECUTE cambiarDirector(4, 7);
+EXECUTE cambiarDirector(5, 9);
+EXECUTE cambiarDirector(6, 11);
+EXECUTE cambiarDirector(7, 13);
+EXECUTE cambiarDirector(8, 15);
+EXECUTE cambiarDirector(9, 17);
+EXECUTE cambiarDirector(10, 19);
+EXECUTE cambiarDirector(11, 21);
+EXECUTE cambiarDirector(12, 23);
 
 EXECUTE nuevoCliente(1, '26262626A', 'A', 'Hipercor', 'Virgen de la Capilla 32, Jaén', 'Andalucía');
 EXECUTE nuevoCliente(2, '27272727B', 'C', 'Restaurante Cacereño', 'San Marcos 41, Cáceres', 'Extremadura');
