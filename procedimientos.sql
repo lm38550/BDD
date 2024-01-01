@@ -104,6 +104,8 @@ BEGIN
     COMMIT;
 END transladarEmpleado;
 
+
+
 CREATE OR REPLACE PROCEDURE nuevaSucursal(
     p_codigo NUMBER,
     p_nombre VARCHAR2,
@@ -111,29 +113,31 @@ CREATE OR REPLACE PROCEDURE nuevaSucursal(
     p_comunidadAutonoma VARCHAR2,
     p_director NUMBER DEFAULT NULL
 ) IS
-    v_codigo NUMBER(10);
+    v_count NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_codigo
-    FROM Sucursales
-    WHERE codigo = p_codigo;
+    SELECT COUNT(*) INTO v_count FROM Sucursales WHERE director = p_director;
 
-    IF v_codigo = 0 THEN
-        INSERT INTO Sucursales (
-            codigo,
-            nombre,
-            ciudad,
-            comunidadAutonoma,
-            director
-        ) VALUES (
-            p_codigo,
-            p_nombre,
-            p_ciudad,
-            p_comunidadAutonoma,
-            p_director
-        );
-        DBMS_OUTPUT.PUT_LINE('Sucursal creada exitosamente.');
+    IF v_count > 0 OR p_director IS NULL THEN
+        BEGIN
+            INSERT INTO Sucursales (
+                codigo,
+                nombre,
+                ciudad,
+                comunidadAutonoma,
+                director
+            ) VALUES (
+                p_codigo,
+                p_nombre,
+                p_ciudad,
+                p_comunidadAutonoma,
+                p_director
+            );
+            DBMS_OUTPUT.PUT_LINE('Sucursal creada exitosamente.'); 
+        END;
     ELSE
-        DBMS_OUTPUT.PUT_LINE('Ya existe una Sucursal con este codigo.');
+        BEGIN
+            DBMS_OUTPUT.PUT_LINE('Director does not exist');
+        END;
     END IF;
     
     COMMIT;
@@ -143,26 +147,36 @@ EXCEPTION
 END nuevaSucursal;
 
 
+
 CREATE OR REPLACE PROCEDURE cambiarDirector(
     p_codigo_sucursal NUMBER,
     p_codigo_director VARCHAR2
 ) IS
     v_comunidad_autonoma VARCHAR(50);
+    v_director_exists NUMBER;
 BEGIN
-    SELECT comunidadAutonoma INTO v_comunidad_autonoma
+    SELECT COUNT(*) INTO v_director_exists
     FROM Sucursales
-    WHERE codigo = p_codigo_sucursal;
+    WHERE director = p_codigo_director;
 
-    UPDATE Sucursales
-    SET
-        director = p_codigo_director
-    WHERE
-        codigo = p_codigo_sucursal
-    AND
-        comunidadAutonoma = v_comunidad_autonoma;
-    
-    COMMIT;
-    DBMS_OUTPUT.PUT_LINE('Director insertado o actualizado');
+    IF v_director_exists > 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Error: The director is already assigned to another sucursal.');
+    ELSE
+        SELECT comunidadAutonoma INTO v_comunidad_autonoma
+        FROM Sucursales
+        WHERE codigo = p_codigo_sucursal;
+
+        UPDATE Sucursales
+        SET
+            director = p_codigo_director
+        WHERE
+            codigo = p_codigo_sucursal
+        AND
+            comunidadAutonoma = v_comunidad_autonoma;
+        
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('Director insertado o actualizado');
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
@@ -177,13 +191,13 @@ CREATE OR REPLACE PROCEDURE nuevoCliente(
     p_direccion VARCHAR2,
     p_comunidadAutonoma VARCHAR2
 ) IS
-    v_codigo NUMBER(10);
+    v_count NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_codigo
-    FROM Clientes
-    WHERE codigo = p_codigo;
+    SELECT COUNT(*) INTO v_count FROM Clientes WHERE codigo = p_codigo;
 
-    IF v_codigo = 0 THEN
+    IF v_count > 0 THEN
+        DBMS_OUTPUT.PUT_LINE('A client with this code already exists');
+    ELSIF p_tipo IN ('A', 'B', 'C') THEN
         INSERT INTO Clientes(
             codigo,
             DNI,
@@ -198,12 +212,13 @@ BEGIN
             p_nombre,
             p_direccion,
             p_comunidadAutonoma);
+        
         DBMS_OUTPUT.PUT_LINE('Cliente creada');
+        
+        COMMIT;
     ELSE
-        DBMS_OUTPUT.PUT_LINE('Ya existe un cliente con este codigo.');
+        DBMS_OUTPUT.PUT_LINE('El cliente debe ser de tipo A, B o C');
     END IF;
-    
-    COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
@@ -217,29 +232,47 @@ create or replace PROCEDURE nuevoSuministro(
     p_fecha_solicitud DATE,
     p_cantidad NUMBER
 ) IS
+    v_max_date DATE;
+    v_cantidad_producida NUMBER;
+    v_cantidad_disponible NUMBER;
 BEGIN
-    INSERT INTO Suministros (
-        CANTIDAD,
-        FECHA,
-        CODIGO_VINO,
-        CODIGO_CLIENTE,
-        CODIGO_SUCURSAL
-    ) VALUES (
-        p_cantidad,
-        p_fecha_solicitud,
-        p_codigo_vino,
-        p_codigo_cliente,
-        p_codigo_sucursal
-    );
-    
-    DBMS_OUTPUT.PUT_LINE('Suministro creado o actualizado');
-    
+    SELECT MAX(FECHA) INTO v_max_date
+    FROM Suministros
+    WHERE CODIGO_CLIENTE = p_codigo_cliente;
+
+    IF v_max_date IS NULL OR p_fecha_solicitud >= v_max_date THEN
+        SELECT cantidadStock, cantidadProducida INTO v_cantidad_disponible, v_cantidad_producida
+        FROM Vinos
+        WHERE codigo = p_codigo_vino;
+
+        IF v_cantidad_disponible >= p_cantidad THEN
+            INSERT INTO Suministros (
+                CANTIDAD,
+                FECHA,
+                CODIGO_VINO,
+                CODIGO_CLIENTE,
+                CODIGO_SUCURSAL
+            ) VALUES (
+                p_cantidad,
+                p_fecha_solicitud,
+                p_codigo_vino,
+                p_codigo_cliente,
+                p_codigo_sucursal
+            );
+
+            UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad, cantidadProducida = v_cantidad_producida WHERE codigo = p_codigo_vino;
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('There is isufficient amount of Wine remaining for this order.');
+        END IF;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The new order date is earlier than existing orders. It cannot be created or updated.');
+    END IF;
+
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END nuevoSuministro;
-
 
 
 CREATE OR REPLACE PROCEDURE bajaSuministro(
