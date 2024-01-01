@@ -6,7 +6,7 @@ Precedimiento :
     F nuevoSuministroLocalidad translate errors to Spanish
 
 F DOCUMENTATION
-L Alternative ER diagramm
+done L Alternative ER diagramm
 
 L “Listar los clientes (nombre y dirección) de Andalucía o Castilla-La Mancha y las
 sucursales (nombre y ciudad), a los que se le ha suministrado vino de marca “Tablas
