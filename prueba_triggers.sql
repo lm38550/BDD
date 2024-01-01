@@ -14,8 +14,12 @@ INSERT INTO Pides VALUES (TO_DATE('20230901', 'YYYYMMDD'), 2, 1, 1, 1)
 
 INSERT INTO Suministros VALUES (150, TO_DATE('20231104', 'YYYYMMDD'), 20, 3, 12)
 
-EXECUTE nuevoSuministro (3, 12, 20, TO_DATE('20231104', 'YYYYMMDD'), 150); ---new supply
+EXECUTE nuevoSuministro (3, 12, 20, TO_DATE('20231105', 'YYYYMMDD'), 150); ---new supply
 EXECUTE nuevoSuministro (3, 12, 20, TO_DATE('20231104', 'YYYYMMDD'), 1); ---add to supply
 
 EXECUTE transladarEmpleado (1, 2); ---same localidad
 EXECUTE transladarEmpleado (1, 4); ---different localidad
+
+EXECUTE nuevaSucursal (13, 'Testsucursal', 'Pamplona', 'Galicia'); --- working new sucursal without director
+EXECUTE nuevaSucursal (13, 'Testsucursal', 'Pamplona', 'Galicia', 9999); --- wrong director
+
