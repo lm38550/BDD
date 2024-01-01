@@ -115,7 +115,7 @@ CREATE OR REPLACE PROCEDURE nuevaSucursal(
 ) IS
     v_count NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_count FROM Sucursales WHERE director = p_director;
+    SELECT COUNT(*) INTO v_count FROM Empleados WHERE codigo = p_director;
 
     IF v_count > 0 OR p_director IS NULL THEN
         BEGIN
@@ -150,7 +150,7 @@ END nuevaSucursal;
 
 CREATE OR REPLACE PROCEDURE cambiarDirector(
     p_codigo_sucursal NUMBER,
-    p_codigo_director VARCHAR2
+    p_codigo_director VARCHAR2 DEFAULT NULL
 ) IS
     v_comunidad_autonoma VARCHAR(50);
     v_director_exists NUMBER;
@@ -363,7 +363,7 @@ BEGIN
         IF v_localidadPedidor != v_localidadEntregador THEN
             IF v_localidadVino = v_localidadEntregador THEN
                 IF v_cantidad_disponible >= p_cantidad THEN
-                    SELECT fecha INTO v_fechaUltima
+                    SELECT MAX(fecha) INTO v_fechaUltima
                     FROM Pides
                     WHERE codigo_pedidor = p_codigo_pedidor
                     AND codigo_entregador = p_codigo_entregador
