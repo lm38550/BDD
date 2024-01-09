@@ -8,11 +8,11 @@ Precedimiento :
 F DOCUMENTATION
 done L Alternative ER diagramm
 
-L “Listar los clientes (nombre y dirección) de Andalucía o Castilla-La Mancha y las
+done L “Listar los clientes (nombre y dirección) de Andalucía o Castilla-La Mancha y las
 sucursales (nombre y ciudad), a los que se le ha suministrado vino de marca “Tablas
 de Daimiel” entre el 1 de Enero de 2023 y el 1 de septiembre de 2023.
 
-L Dado por teclado el código de un productor: “Listar la marca, el año de cosecha de
+done L Dado por teclado el código de un productor: “Listar la marca, el año de cosecha de
 cada uno de los vinos producidos por él y la cantidad total suministrada de cada uno
 de ellos a clientes de las comunidades autónomas de Baleares, Extremadura o País
 Valenciano.
