@@ -114,6 +114,7 @@ CREATE OR REPLACE PROCEDURE nuevaSucursal(
     p_director NUMBER DEFAULT NULL
 ) IS
     v_count NUMBER;
+    v_codigo NUMBER;
 BEGIN
     SELECT COUNT(*) INTO v_count FROM Empleados WHERE codigo = p_director;
     SELECT COUNT(*) INTO v_codigo FROM Sucursales WHERE codigo = p_codigo;
@@ -606,4 +607,4 @@ BEGIN
         -- Vous pouvez lever une exception ou gérer d'une autre manière
         RAISE_APPLICATION_ERROR(-20001, 'Pides existen por los vinos de ese productor');
     END IF;
-END;
+END bajaProductor;

@@ -435,26 +435,6 @@ BEGIN
     USING :OLD.codigo;
 END;
 
-CREATE OR REPLACE TRIGGER borrarVinoLocalidad
-INSTEAD OF DELETE ON Vinos
-FOR EACH ROW
-DECLARE
-    v_localidad VARCHAR2(50);
-BEGIN
-    CASE
-        WHEN :OLD.comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
-        WHEN :OLD.comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
-        WHEN :OLD.comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
-        WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
-        ELSE
-            -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :OLD.comunidadAutonoma);
-    END CASE;
-
-    EXECUTE IMMEDIATE 'DELETE FROM ' || v_localidad || '.Vino WHERE codigo = :1'
-    USING :OLD.codigo;
-END;
-
 CREATE OR REPLACE TRIGGER borrarPideLocalidad
 INSTEAD OF DELETE ON Pides
 FOR EACH ROW
@@ -544,92 +524,6 @@ BEGIN
     EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Sucursal SET director = :1 WHERE codigo = :2'
     USING :NEW.director, :NEW.codigo;
 END;
-
-CREATE OR REPLACE TRIGGER modificarEmpleadoLocalidad
-INSTEAD OF UPDATE ON Empleados
-FOR EACH ROW
-DECLARE
-    v_comunidadAutonoma VARCHAR2(50);
-    v_localidad VARCHAR2(50);
-BEGIN
-    SELECT comunidadAutonoma INTO v_comunidadAutonoma
-    FROM Sucursales
-    WHERE codigo = :NEW.codigo_sucursal;
-
-    CASE
-        WHEN v_comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad := 'erasmus1';
-        WHEN v_comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad := 'erasmus2';
-        WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
-        WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
-        ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
-    END CASE;
-
-    BEGIN
-        EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Empleado SET DNI = :1, nombre = :2, direccion = :3, fechaDeComienzo = :4, salario = :5, trabajaPorLaSucursal = :6, codigo_sucursal = :7 WHERE codigo = :8'
-        USING :NEW.dni, :NEW.nombre, :NEW.direccion, :NEW.fechaDeComienzo, :NEW.salario, :NEW.trabajaPorLaSucursal, :NEW.codigo_sucursal, :OLD.codigo;
-    EXCEPTION
-        WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-    END;
-END;
-
-CREATE OR REPLACE TRIGGER modificarEmpleadoLocalidad
-INSTEAD OF UPDATE ON Empleados
-FOR EACH ROW
-DECLARE
-    v_comunidadAutonoma VARCHAR2(50);
-    v_localidad_old VARCHAR2(50);
-    v_localidad_new VARCHAR2(50);
-BEGIN
-    SELECT comunidadAutonoma INTO v_comunidadAutonoma
-    FROM Sucursales
-    WHERE codigo = :OLD.codigo_sucursal;
-
-    CASE
-        WHEN v_comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad_old := 'erasmus1';
-        WHEN v_comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad_old := 'erasmus2';
-        WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad_old := 'erasmus3';
-        WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad_old := 'erasmus4';
-        ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
-    END CASE;
-
-    SELECT comunidadAutonoma INTO v_comunidadAutonoma
-    FROM Sucursales
-    WHERE codigo = :NEW.codigo_sucursal;
-
-    CASE
-        WHEN v_comunidadAutonoma IN ('Castilla-León', 'Castilla-La Mancha', 'Aragón', 'Madrid', 'La Rioja') THEN v_localidad_new := 'erasmus1';
-        WHEN v_comunidadAutonoma IN ('Cataluña', 'Baleares', 'País Valenciano', 'Murcia') THEN v_localidad_new := 'erasmus2';
-        WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad_new := 'erasmus3';
-        WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad_new := 'erasmus4';
-        ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
-    END CASE;
-
-    IF v_localidad_old = v_localidad_new THEN
-        BEGIN
-            EXECUTE IMMEDIATE 'UPDATE ' || v_localidad_new || '.Empleado SET DNI = :1, nombre = :2, direccion = :3, fechaDeComienzo = :4, salario = :5, trabajaPorLaSucursal = :6, codigo_sucursal = :7 WHERE codigo = :8'
-            USING :NEW.dni, :NEW.nombre, :NEW.direccion, :NEW.fechaDeComienzo, :NEW.salario, :NEW.trabajaPorLaSucursal, :NEW.codigo_sucursal, :OLD.codigo;
-        EXCEPTION
-            WHEN OTHERS THEN
-                DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        END;
-    ELSE
-        BEGIN
-            EXECUTE IMMEDIATE 'DELETE FROM ' || v_localidad_old || '.Empleado WHERE codigo = :1'
-            USING :OLD.codigo;
-
-            EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad_new || '.Empleado (DNI, nombre, direccion, fechaDeComienzo, salario, trabajaPorLaSucursal, codigo_sucursal, codigo) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)'
-            USING :NEW.dni, :NEW.nombre, :NEW.direccion, :NEW.fechaDeComienzo, :NEW.salario, :NEW.trabajaPorLaSucursal, :NEW.codigo_sucursal, :NEW.codigo;
-        EXCEPTION
-            WHEN OTHERS THEN
-                DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        END;
-    END IF;
-END;
-
 
 CREATE OR REPLACE TRIGGER modificarEmpleadoLocalidad
 INSTEAD OF UPDATE ON Empleados

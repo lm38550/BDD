@@ -26,7 +26,7 @@ EXECUTE nuevoVino(20, 'Altamira', 2019, 'Tierra de Liébana', '9.5', 'Cuevas', '
 EXECUTE nuevoVino(21, 'Virgen negra', 2019, 'Islas Canarias', '10.5', 'Guanche', 'Canarias', 300, 3);
 
 EXECUTE nuevaSucursal(1, 'Santa Cruz', 'Sevilla', 'Andalucía', NULL);
-EXECUTE nuevaSucursal(2, 'Palacios Nazaríes', 'Granada', 'Andalucía' NULL);
+EXECUTE nuevaSucursal(2, 'Palacios Nazaríes', 'Granada', 'Andalucía', NULL);
 EXECUTE nuevaSucursal(3, 'Tacita de Plata', 'Cádiz', 'Andalucía', NULL);
 EXECUTE nuevaSucursal(4, 'Almudena', 'Madrid', 'Madrid', NULL);
 EXECUTE nuevaSucursal(5, 'El Cid', 'Burgos', 'Castilla-León', NULL);
