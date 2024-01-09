@@ -116,30 +116,37 @@ CREATE OR REPLACE PROCEDURE nuevaSucursal(
     v_count NUMBER;
 BEGIN
     SELECT COUNT(*) INTO v_count FROM Empleados WHERE codigo = p_director;
+    SELECT COUNT(*) INTO v_codigo FROM Sucursales WHERE codigo = p_codigo;
 
-    IF v_count > 0 OR p_director IS NULL THEN
-        BEGIN
-            INSERT INTO Sucursales (
-                codigo,
-                nombre,
-                ciudad,
-                comunidadAutonoma,
-                director
-            ) VALUES (
-                p_codigo,
-                p_nombre,
-                p_ciudad,
-                p_comunidadAutonoma,
-                p_director
-            );
-            DBMS_OUTPUT.PUT_LINE('Sucursal creada exitosamente.'); 
-        END;
+    IF v_codigo = 0 THEN
+        IF v_count > 0 OR p_director IS NULL THEN
+            BEGIN
+                INSERT INTO Sucursales (
+                    codigo,
+                    nombre,
+                    ciudad,
+                    comunidadAutonoma,
+                    director
+                ) VALUES (
+                    p_codigo,
+                    p_nombre,
+                    p_ciudad,
+                    p_comunidadAutonoma,
+                    p_director
+                );
+                DBMS_OUTPUT.PUT_LINE('Sucursal creada exitosamente.'); 
+            END;
+        ELSE
+            BEGIN
+                DBMS_OUTPUT.PUT_LINE('Director does not exist');
+            END;
+        END IF;
     ELSE
         BEGIN
-            DBMS_OUTPUT.PUT_LINE('Director does not exist');
+            DBMS_OUTPUT.PUT_LINE('Una sucursal con este codigo ya existe');
         END;
     END IF;
-    
+
     COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
@@ -560,45 +567,43 @@ END nuevoProductor;
 create or replace PROCEDURE bajaProductor(
     p_codigo NUMBER
 ) IS
-    v_suministosVinos NUMBER(10);
+    v_suministrosVinos NUMBER(10);
     v_pidesVinos NUMBER(10);
-BEGIN
-    SELECT COUNT(V.codigo) INTO v_suministosVinos
-    FROM Vinos V, Suministros S
-    WHERE V.codigo_productor = p_codigo
-    AND S.codigo_vino = V.codigo
+    v_vinosProd NUMBER(10);
+    v_numVinos NUMBER(10);
+BEGIN    
+    SELECT COUNT(V.codigo) INTO v_suministrosVinos
+    FROM Suministros S
+    LEFT JOIN Vinos V ON V.codigo = S.codigo_vino
+    WHERE V.codigo_productor = p_codigo;
 
     SELECT COUNT(V.codigo) INTO v_pidesVinos
-    FROM Vinos V, Pides P
-    WHERE V.codigo_productor = p_codigo
-    AND P.codigo_vino = V.codigo
+    FROM Pides P
+    LEFT JOIN Vinos V ON V.codigo = P.codigo_vino
+    WHERE V.codigo_productor = p_codigo;
 
     IF v_pidesVinos = 0 THEN
-        IF v_suministosVinos = 0 THEN
-            SELECT codigo INTO v_vinosProd
+        IF v_suministrosVinos = 0 THEN       
+            SELECT COUNT(*)INTO v_numVinos
             FROM Vinos
             WHERE codigo_productor = p_codigo;
-
-            FOR v_row IN SELECT * FROM v_vinosProd
-            LOOP
-                PERFORM bajaVino(v_row.codigo);
-            END LOOP;
+            
+            IF v_numVinos > 0 THEN                
+                FOR v_row IN (SELECT * FROM Vinos WHERE codigo_productor = p_codigo)
+                LOOP
+                    bajaVino(v_row.codigo);
+                END LOOP;
+            END IF;
 
             DELETE FROM Productor WHERE codigo = p_codigo;
-
-            DBMS_OUTPUT.PUT_LINE('Productor borado exitosamente.');
+            DBMS_OUTPUT.PUT_LINE('Productor borrado exitosamente.');
             COMMIT;
         ELSE
-            -- You might want to raise an exception or handle it in a different way
-            RAISE_APPLICATION_ERROR(-20001, 'Suminitros existen por los vinos de ese productor');
+            -- Vous pouvez lever une exception ou gérer d'une autre manière
+            RAISE_APPLICATION_ERROR(-20001, 'Suministros existen por los vinos de ese productor');
         END IF;
     ELSE
-        -- You might want to raise an exception or handle it in a different way
+        -- Vous pouvez lever une exception ou gérer d'une autre manière
         RAISE_APPLICATION_ERROR(-20001, 'Pides existen por los vinos de ese productor');
     END IF;
-
-
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-END bajaProductor;
+END;
