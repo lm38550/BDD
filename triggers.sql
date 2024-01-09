@@ -90,7 +90,7 @@ BEGIN
         WHEN :NEW.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :NEW.comunidadAutonoma);
     END CASE;
 
     EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad || '.Sucursal(codigo, nombre, ciudad, director, comunidadAutonoma) VALUES (:1, :2, :3, :4, :5)'
@@ -110,7 +110,7 @@ BEGIN
         WHEN :NEW.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :NEW.comunidadAutonoma);
     END CASE;
 
     EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad || '.Cliente(codigo, DNI, tipo, nombre, direccion, comunidadAutonoma) VALUES (:1, :2, :3, :4, :5, :6)'
@@ -137,7 +137,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -164,7 +164,7 @@ BEGIN
         WHEN :NEW.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :NEW.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :NEW.comunidadAutonoma);
     END CASE;
 
     EXECUTE IMMEDIATE 'INSERT INTO ' || v_localidad || '.Vino(codigo, marca, comunidadAutonoma, año, denominacionDeOrigen, graduacion, viñedoDeProcedencia, cantidadProducida, cantidadStock, codigo_productor) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)'
@@ -190,7 +190,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -268,30 +268,30 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('Suministro creado');
 
     ELSIF v_localidad_cliente != v_localidad_sucursal AND v_localidad_sucursal != v_localidad_vino AND v_localidad_cliente != v_localidad_vino THEN
-        DBMS_OUTPUT.PUT_LINE('The locations of the Vino, Sucursal and Client all do not match.');
+        DBMS_OUTPUT.PUT_LINE('Las localidades del Vino, Sucursal y Cliente no coinciden.');
 
     ELSIF v_localidad_cliente != v_localidad_sucursal AND v_localidad_sucursal != v_localidad_vino THEN
-        DBMS_OUTPUT.PUT_LINE('You can only order from a sucursal in your location. The selected sucursal does not distribute the selected wine.');
+        DBMS_OUTPUT.PUT_LINE('Sólo puede hacer pedidos a una sucursal de su localidad. La sucursal seleccionada no distribuye el vino seleccionado.');
 
     ELSIF v_localidad_sucursal != v_localidad_vino AND v_localidad_cliente != v_localidad_vino THEN
-        DBMS_OUTPUT.PUT_LINE('The selected sucursal does not distribute the selected wine. The requested wine is not in your location. It, therefore, cannot be ordered.');
+        DBMS_OUTPUT.PUT_LINE('La sucursal seleccionada no distribuye el vino seleccionado. El vino solicitado no se encuentra en su localidad. Por lo tanto, no se puede pedir.');
 
     ELSIF v_localidad_cliente != v_localidad_sucursal AND v_localidad_cliente != v_localidad_vino THEN
-        DBMS_OUTPUT.PUT_LINE('The requested wine is not in your location. It, therefore, cannot be ordered. The selected sucursal does not distribute the selected wine.');
+        DBMS_OUTPUT.PUT_LINE('El vino solicitado no se encuentra en su localidad. Por lo tanto, no se puede pedir. La sucursal seleccionada no distribuye el vino seleccionado.');
 
     ELSIF v_localidad_cliente != v_localidad_vino THEN
-        DBMS_OUTPUT.PUT_LINE('The requested wine is not in your location. It, therefore, cannot be ordered.');
+        DBMS_OUTPUT.PUT_LINE('El vino solicitado no se encuentra en su localidad. Por lo tanto, no se puede pedir.');
 
     ELSIF v_localidad_cliente != v_localidad_sucursal THEN
-        DBMS_OUTPUT.PUT_LINE('You can only order from a sucursal that is in your location.');
+        DBMS_OUTPUT.PUT_LINE('Sólo puede hacer pedidos a una sucursal que esté en su localidad.');
 
     ELSIF v_localidad_sucursal != v_localidad_vino THEN
     -- The localidades do not match between sucursal and vino
-        DBMS_OUTPUT.PUT_LINE('The requested vine is not distributed by the selected sucursal');
+        DBMS_OUTPUT.PUT_LINE('El vino solicitada no es distribuida por la sucursal seleccionada');
 
     ELSE
         -- The localidades do not match between sucursal and vino
-        DBMS_OUTPUT.PUT_LINE('Other error. Check your parameters entered.');
+        DBMS_OUTPUT.PUT_LINE('Otro error. Compruebe los parámetros introducidos.');
     END IF;
     
 EXCEPTION
@@ -403,7 +403,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -428,7 +428,7 @@ BEGIN
         WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :OLD.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :OLD.comunidadAutonoma);
     END CASE;
 
     EXECUTE IMMEDIATE 'DELETE FROM ' || v_localidad || '.Vino WHERE codigo = :1'
@@ -448,7 +448,7 @@ BEGIN
         WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :OLD.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :OLD.comunidadAutonoma);
     END CASE;
 
     EXECUTE IMMEDIATE 'DELETE FROM ' || v_localidad || '.Vino WHERE codigo = :1'
@@ -472,7 +472,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -504,7 +504,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -534,7 +534,7 @@ BEGIN
         WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :OLD.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :OLD.comunidadAutonoma);
     END CASE;
     
     DBMS_OUTPUT.PUT_LINE('Localidad is : ' || v_localidad);
@@ -562,7 +562,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -592,7 +592,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad_old := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad_old := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     SELECT comunidadAutonoma INTO v_comunidadAutonoma
@@ -605,7 +605,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad_new := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad_new := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     IF v_localidad_old = v_localidad_new THEN
@@ -649,7 +649,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad_old := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad_old := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     SELECT comunidadAutonoma INTO v_comunidadAutonoma
@@ -662,7 +662,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad_new := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad_new := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     IF v_localidad_old = v_localidad_new THEN
@@ -701,7 +701,7 @@ BEGIN
         WHEN :OLD.comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || :OLD.comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || :OLD.comunidadAutonoma);
     END CASE;    
 
     EXECUTE IMMEDIATE 'UPDATE ' || v_localidad || '.Vino SET cantidadProducida = :1, cantidadStock = :2 WHERE codigo = :3'
@@ -725,7 +725,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Galicia', 'Asturias', 'Cantabria', 'País Vasco', 'Navarra') THEN v_localidad := 'erasmus3';
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN
@@ -756,7 +756,7 @@ BEGIN
         WHEN v_comunidadAutonoma IN ('Andalucía', 'Extremadura', 'Canarias', 'Ceuta', 'Melilla') THEN v_localidad := 'erasmus4';
         ELSE
             -- Handle the error case here
-            RAISE_APPLICATION_ERROR(-20001, 'Invalid comunidadAutonoma: ' || v_comunidadAutonoma);
+            RAISE_APPLICATION_ERROR(-20001, 'comunidadAutonoma no valido: ' || v_comunidadAutonoma);
     END CASE;
 
     BEGIN

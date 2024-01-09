@@ -55,7 +55,7 @@ BEGIN
         EXECUTE IMMEDIATE 'DELETE FROM Empleados WHERE codigo = :1' USING p_codigo;
     EXCEPTION
         WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Error deleting employee record');
+            RAISE_APPLICATION_ERROR(-20001, 'Error al borrar el registro de un empleado');
     END;
 
     BEGIN
@@ -99,7 +99,7 @@ BEGIN
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20002, 'Empleado with codigo ' || p_codigo || ' not found');
         WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Error updating employee record');
+            RAISE_APPLICATION_ERROR(-20001, 'Error al actualizar el registro de empleados');
     END;
     COMMIT;
 END transladarEmpleado;
@@ -167,7 +167,7 @@ BEGIN
     WHERE director = p_codigo_director;
 
     IF v_director_exists > 0 THEN
-        DBMS_OUTPUT.PUT_LINE('Error: The director is already assigned to another sucursal.');
+        DBMS_OUTPUT.PUT_LINE('Error: El director ya está asignado a otra sucursal.');
     ELSE
         SELECT comunidadAutonoma INTO v_comunidad_autonoma
         FROM Sucursales
@@ -203,7 +203,7 @@ BEGIN
     SELECT COUNT(*) INTO v_count FROM Clientes WHERE codigo = p_codigo;
 
     IF v_count > 0 THEN
-        DBMS_OUTPUT.PUT_LINE('A client with this code already exists');
+        DBMS_OUTPUT.PUT_LINE('Ya existe un cliente con este código');
     ELSIF p_tipo IN ('A', 'B', 'C') THEN
         INSERT INTO Clientes(
             codigo,
@@ -269,10 +269,10 @@ BEGIN
 
             UPDATE Vinos SET cantidadStock = v_cantidad_disponible - p_cantidad, cantidadProducida = v_cantidad_producida WHERE codigo = p_codigo_vino;
         ELSE
-            DBMS_OUTPUT.PUT_LINE('There is isufficient amount of Wine remaining for this order.');
+            DBMS_OUTPUT.PUT_LINE('No queda suficiente vino para este pedido.');
         END IF;
     ELSE
-        DBMS_OUTPUT.PUT_LINE('The new order date is earlier than existing orders. It cannot be created or updated.');
+        DBMS_OUTPUT.PUT_LINE('La fecha del nuevo pedido es anterior a la de los pedidos existentes. No se puede crear ni actualizar.');
     END IF;
 
     COMMIT;
@@ -402,7 +402,7 @@ BEGIN
                     END IF;
                 ELSE
                     -- You might want to raise an exception or handle it in a different way
-                    RAISE_APPLICATION_ERROR(-20001, 'Insufficient quantity');
+                    RAISE_APPLICATION_ERROR(-20001, 'Cantidad insuficiente');
                 END IF;
             ELSE
                 -- You might want to raise an exception or handle it in a different way
